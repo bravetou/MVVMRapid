@@ -1,12 +1,8 @@
 package com.brave.mvvmrapid.utils
 
 import android.content.res.ColorStateList
-import android.graphics.Color
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColorInt
-import com.blankj.utilcode.util.Utils
 
 /**
  * ***author***     ：brave tou
@@ -45,26 +41,14 @@ class StateListColor private constructor() {
      * 添加一个状态组对应的颜色资源
      */
     fun addStateXRes(states: IntArray, @ColorRes resId: Int): StateListColor {
-        return addStateX(
-            states, try {
-                ContextCompat.getColor(Utils.getApp(), resId)
-            } catch (e: Exception) {
-                Color.TRANSPARENT
-            }
-        )
+        return addStateX(states, globalContext.getColorIntX(resId))
     }
 
     /**
      * 添加一个状态组对应的颜色字符串
      */
     fun addStateX(states: IntArray, colorString: String): StateListColor {
-        return addStateX(
-            states, try {
-                colorString.toColorInt()
-            } catch (e: Exception) {
-                Color.TRANSPARENT
-            }
-        )
+        return addStateX(states, colorString.getColorIntX())
     }
 
     /**
@@ -79,32 +63,18 @@ class StateListColor private constructor() {
      * 添加一个单状态对应的颜色资源
      */
     fun addStateXRes(state: Int, @ColorRes resId: Int): StateListColor {
-        return addStateX(
-            state, try {
-                ContextCompat.getColor(Utils.getApp(), resId)
-            } catch (e: Exception) {
-                Color.TRANSPARENT
-            }
-        )
+        return addStateX(state, globalContext.getColorIntX(resId))
     }
 
     /**
      * 添加一个单状态对应的颜色字符串
      */
     fun addStateX(state: Int, colorString: String): StateListColor {
-        return addStateX(
-            state, try {
-                colorString.toColorInt()
-            } catch (e: Exception) {
-                Color.TRANSPARENT
-            }
-        )
+        return addStateX(state, colorString.getColorIntX())
     }
-
 
     /**
      * 必须必须调用此方法，最终生成一个[ColorStateList]
-     *
      * @return 返回[ColorStateList]
      */
     fun build(): ColorStateList {
