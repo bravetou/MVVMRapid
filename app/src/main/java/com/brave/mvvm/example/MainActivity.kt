@@ -1,11 +1,32 @@
 package com.brave.mvvm.example
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.brave.mvvm.example.databinding.ActivityMainBinding
+import com.brave.mvvmrapid.core.common.CommonActivity
+import com.brave.mvvmrapid.core.common.CommonViewModel
 
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+/**
+ * ***author***     ：brave tou
+ *
+ * ***blog***       ：https://blog.csdn.net/bravetou
+ *
+ * ***time***       ：2022/9/23 15:43
+ *
+ * ***desc***       ：Main View
+ */
+class MainActivity : CommonActivity<ActivityMainBinding, MainViewModel>() {
+    override val variableId: Int
+        get() = BR.viewModel
+
+    override fun initView() {
+
+    }
+
+    override fun initData() {
+
+    }
+
+    override fun initObserver() {
+
     }
 }

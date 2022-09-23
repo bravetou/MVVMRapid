@@ -30,7 +30,7 @@ open class CommonApp : Application() {
     ////////////////////////////////我是一条分割线哟//////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////
 
-    override fun attachBaseContext(base: Context?) {
+    override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
         // 防64K
         MultiDex.install(base)
