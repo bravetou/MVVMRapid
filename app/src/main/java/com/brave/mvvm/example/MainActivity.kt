@@ -2,6 +2,7 @@ package com.brave.mvvm.example
 
 import android.os.Bundle
 import com.brave.mvvm.example.databinding.ActivityMainBinding
+import com.brave.mvvm.example.databinding.ActivityTestBinding
 import com.brave.mvvmrapid.core.common.CommonActivity
 import com.brave.mvvmrapid.core.common.CommonViewModel
 
