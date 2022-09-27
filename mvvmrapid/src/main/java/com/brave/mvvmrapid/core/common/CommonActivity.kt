@@ -1,16 +1,22 @@
+@file:Suppress(
+    "UNCHECKED_CAST",
+    "MemberVisibilityCanBePrivate"
+)
+
 package com.brave.mvvmrapid.core.common
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewbinding.ViewBinding
+import com.brave.mvvmrapid.utils.BindingHelper
 import java.lang.reflect.ParameterizedType
 
 /**
@@ -22,110 +28,140 @@ import java.lang.reflect.ParameterizedType
  *
  * ***desc***       ：Activity常用类
  */
-@Suppress(
-    "UNNECESSARY_SAFE_CALL",
-    "UNCHECKED_CAST",
-    "UNNECESSARY_NOT_NULL_ASSERTION",
-    "MemberVisibilityCanBePrivate",
-    "unused"
-)
-abstract class CommonActivity<V : ViewDataBinding, VM : CommonViewModel>
+abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     : AppCompatActivity(), ICommonView {
     // binding
-    protected lateinit var binding: V
+    private lateinit var _binding: Binding
+    val binding: Binding
+        get() = _binding
 
     // viewModel
-    protected lateinit var viewModel: VM
+    private lateinit var _viewModel: VM
+    val viewModel: VM
+        get() = _viewModel
+
+    /**
+     * 是数据绑定，即是[ViewDataBinding]
+     */
+    val isDataBinding: Boolean
+        get() = binding is ViewDataBinding
+
+    /**
+     * 只能在[isDataBinding]为true时使用，否则抛出异常
+     */
+    val dataBinding: ViewDataBinding
+        get() = if (isDataBinding) {
+            binding as ViewDataBinding
+        } else {
+            throw RuntimeException("[${binding}] is not [${ViewDataBinding::javaClass}] or a subclass of [${ViewDataBinding::javaClass}]")
+        }
+
+    protected val context: Context by lazy { this }
+
+    protected val activity: FragmentActivity by lazy { this }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isDataBinding) {
+            dataBinding.unbind()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initStart()
+        initSystemBar()
+        // 私有的初始化[ViewBinding]和[CommonViewModel]的方法
+        initBinding()
+        initGlobalBus()
+        initView(savedInstanceState)
+        initData()
+        // 页面事件监听的方法，一般用于ViewModel层转到View层的事件注册
+        initObserver()
+        initEnd()
+    }
+
+    /**
+     * 初始化[ViewBinding]和[CommonViewModel]
+     */
+    private fun initBinding() {
+        // 类型
+        val type = javaClass.genericSuperclass
+        // 不是带泛型的参数化类型，则抛出异常
+        if (type !is ParameterizedType)
+            throw RuntimeException("$this is not a parameterized type with generics")
+        // 初始化[Binding]
+        _binding = initViewBinding() ?: kotlin.run {
+            // [Binding]
+            val cls = type.actualTypeArguments[0] as Class<Binding>
+            // 反射初始化[Binding]
+            BindingHelper.getBindingByClass(
+                layoutInflater, cls, binding@{
+                    val layoutId = initLayoutId()
+                    return@binding if (null != layoutId) {
+                        DataBindingUtil.setContentView(this, layoutId)
+                    } else null
+                }, null, { binding ->
+                    setContentView(binding.root)
+                })
+        }
+        // 泛型参数类型数组长度
+        // val size = type.actualTypeArguments.size
+        // 初始化[VM]
+        _viewModel = initViewModel() ?: kotlin.run {
+            // [VM]
+            val cls = type.actualTypeArguments[1] as Class<VM>
+            // 使用[ViewModelProvider]初始化[VM]
+            ViewModelProvider(this)[viewModelKey, cls]
+        }
+        // [ViewDataBinding]
+        if (isDataBinding) {
+            // 关联ViewModel
+            dataBinding.setVariable(variableId, viewModel)
+            // 支持LiveData绑定xml，数据改变，UI自动会更新
+            dataBinding.lifecycleOwner = this
+            // 让ViewModel拥有View的生命周期感应
+            lifecycle.addObserver(viewModel)
+            // 弃用
+            // 注入[LifecycleOwner]生命周期
+            // this.viewModel?.injectLifecycleOwner(this)
+        }
+    }
 
     /**
      * 初始化[viewModel]的id
      */
     protected abstract val variableId: Int
 
-    protected val context: Context by lazy { this }
-
-    protected val activity: FragmentActivity by lazy { this }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // 页面接受的参数方法
-        initParam()
-        // 初始化系统栏
-        initSystemBar()
-        // 私有的初始化DataBinding和ViewModel方法
-        initViewDataBinding()
-        // 初始化View
-        initView()
-        // 页面数据初始化方法
-        initData()
-        // 页面事件监听的方法，一般用于ViewModel层转到View层的事件注册
-        initObserver()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        binding?.unbind()
+    /**
+     * 可选方法
+     *
+     * 初始化[Binding]
+     * @return [Binding]
+     */
+    protected fun initViewBinding(): Binding? {
+        return null
     }
 
     /**
-     * 注入绑定
+     * 可选方法
+     *
+     * 初始化根布局
+     * @return 根布局id
      */
-    private fun initViewDataBinding() {
-        val layoutId = initLayoutId()
-        binding = if (null == layoutId) {
-            val type = javaClass.genericSuperclass
-            if (type is ParameterizedType) {
-                val cls = type.actualTypeArguments[0] as Class<*>
-                initViewBinding(cls)
-            } else {
-                throw RuntimeException("You must assign a value to [V] generics")
-            }
-        } else {
-            // DataBindingUtil类需要在project的build中配置 dataBinding {enabled true }
-            // 同步后会自动关联android.databinding包
-            DataBindingUtil.setContentView(this, layoutId)
-        }
-        val vm = initViewModel()
-        viewModel = if (null == vm) {
-            val type = javaClass.genericSuperclass
-            val modelClass: Class<*> = if (type is ParameterizedType) {
-                type.actualTypeArguments[1] as Class<*>
-            } else {
-                // 如果没有指定泛型参数
-                // 则默认使用[CommonViewModel]
-                initDefaultViewModelClass()
-            }
-            // 带key创建会让使用相同Activity或者Fragment，创建的ViewModel数据独立
-            ViewModelProvider(this)[viewModelKey, modelClass as Class<VM>]
-        } else {
-            vm
-        }
-        // 关联ViewModel
-        binding?.setVariable(variableId, this.viewModel)
-        // 支持LiveData绑定xml，数据改变，UI自动会更新
-        binding?.lifecycleOwner = this
-        // 让ViewModel拥有View的生命周期感应
-        this.viewModel?.let { lifecycle?.addObserver(it) }
-        // 弃用
-        // 注入[LifecycleOwner]生命周期
-        // this.viewModel?.injectLifecycleOwner(this)
+    @LayoutRes
+    protected fun initLayoutId(): Int? {
+        return null
     }
 
     /**
-     * 通过反射初始化当前泛型类[V]的binding对象
+     * 可选方法
+     *
+     * 初始化[VM]
+     * @return [VM]
      */
-    protected fun initViewBinding(cls: Class<*>): V {
-        val method = cls.getDeclaredMethod("inflate", LayoutInflater::class.java)
-        val invoke = method.invoke(null, activity.layoutInflater) as V
-        invoke?.root?.let { setContentView(it) }
-        return invoke
-    }
-
-    /**
-     * 初始化一个默认的继承至[VM]Class类
-     */
-    protected fun initDefaultViewModelClass(): Class<in VM> {
-        return CommonViewModel::class.java
+    protected fun initViewModel(): VM? {
+        return null
     }
 
     /**
@@ -137,32 +173,25 @@ abstract class CommonActivity<V : ViewDataBinding, VM : CommonViewModel>
         }
 
     /**
-     * 初始化根布局
-     * @return 布局layout的id
-     */
-    @LayoutRes
-    protected fun initLayoutId(): Int? {
-        return null
-    }
-
-    /**
-     * 初始化ViewModel
-     * @return 继承[CommonViewModel]的ViewModel
-     */
-    protected fun initViewModel(): VM? {
-        return null
-    }
-
-    override fun initParam() {}
-
-    override fun initSystemBar() {}
-
-    /**
      * 刷新布局
      */
     fun refreshLayout() {
-        binding?.setVariable(variableId, viewModel)
+        if (isDataBinding) {
+            dataBinding.setVariable(variableId, viewModel)
+        }
     }
+
+    override fun initStart() {}
+
+    override fun initSystemBar() {}
+
+    override fun initGlobalBus() {}
+
+    override fun initData() {}
+
+    override fun initObserver() {}
+
+    override fun initEnd() {}
 
     /**
      * 跳转页面

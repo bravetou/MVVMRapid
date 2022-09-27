@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
+import com.blankj.utilcode.util.LogUtils
+import com.brave.mvvmrapid.core.CommonConfig
 import com.brave.mvvmrapid.core.livedata.SingleLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -28,28 +30,50 @@ open class CommonViewModel(
 ) : AndroidViewModel(application), ICommonViewModel {
     protected open val app: Application by lazy { getApplication() }
 
+    companion object {
+        private val TAG = CommonViewModel::class.java.simpleName
+    }
+
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
+        if (CommonConfig.DEBUG) {
+            LogUtils.dTag(TAG, "onCreate: <$this>")
+        }
     }
 
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
+        if (CommonConfig.DEBUG) {
+            LogUtils.dTag(TAG, "onStart: <$this>")
+        }
     }
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
+        if (CommonConfig.DEBUG) {
+            LogUtils.dTag(TAG, "onResume: <$this>")
+        }
     }
 
     override fun onPause(owner: LifecycleOwner) {
         super.onPause(owner)
+        if (CommonConfig.DEBUG) {
+            LogUtils.dTag(TAG, "onPause: <$this>")
+        }
     }
 
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
+        if (CommonConfig.DEBUG) {
+            LogUtils.dTag(TAG, "onStop: <$this>")
+        }
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
+        if (CommonConfig.DEBUG) {
+            LogUtils.dTag(TAG, "onDestroy: <$this>")
+        }
     }
 
     /**

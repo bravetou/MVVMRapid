@@ -19,15 +19,16 @@ class MainActivity : CommonActivity<ActivityMainBinding, MainViewModel>() {
     override val variableId: Int
         get() = BR.viewModel
 
-    override fun initView() {
+    var count = 0
 
-    }
-
-    override fun initData() {
-
-    }
-
-    override fun initObserver() {
-
+    override fun initView(savedInstanceState: Bundle?) {
+        binding.tvHello.setOnClickListener {
+            viewModel.helloWorld.value = when (++count % 3) {
+                0 -> "hello world! => 0"
+                1 -> "hello world! => 1"
+                2 -> "hello world! => 2"
+                else -> "hello world! => 意外"
+            }
+        }
     }
 }
