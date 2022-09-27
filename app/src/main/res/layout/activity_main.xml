@@ -22,11 +22,28 @@
             android:layout_height="wrap_content"
             android:text="@={viewModel.helloWorld}"
             android:visibility="@{viewModel.helloVisibility}"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="hello world!" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_money"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="30dp"
+            android:background="@null"
+            android:ellipsize="end"
+            android:gravity="start|center_vertical"
+            android:hint="请输入金额"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
+            android:paddingHorizontal="24dp"
+            android:textColor="#333333"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_hello" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

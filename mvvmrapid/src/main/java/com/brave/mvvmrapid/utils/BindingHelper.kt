@@ -58,7 +58,7 @@ object BindingHelper {
             }
             else -> {
                 // 其他情况
-                throw RuntimeException("[${cls}] does not belong to [${ViewDataBinding::javaClass}] and does not belong to [${ViewBinding::javaClass}].")
+                throw RuntimeException("[${cls}] does not belong to [${ViewDataBinding::class.java}] and does not belong to [${ViewBinding::class.java}].")
             }
         }
     }

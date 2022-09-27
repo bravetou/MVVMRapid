@@ -53,7 +53,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
         get() = if (isDataBinding) {
             binding as ViewDataBinding
         } else {
-            throw RuntimeException("[${binding}] is not [${ViewDataBinding::javaClass}] or a subclass of [${ViewDataBinding::javaClass}]")
+            throw RuntimeException("[${binding}] is not [${ViewDataBinding::class.java}] or a subclass of [${ViewDataBinding::class.java}]")
         }
 
     protected val context: Context by lazy { this }

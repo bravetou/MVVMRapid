@@ -2,7 +2,9 @@ package com.brave.mvvmrapid.core.filter
 
 import android.text.InputFilter
 import android.text.Spanned
+import android.util.Log
 import com.blankj.utilcode.util.RegexUtils
+import com.brave.mvvmrapid.core.CommonConfig
 
 /**
  * ***author*** ：brave tou
@@ -34,39 +36,76 @@ class MoneyInputFilter private constructor(private val keepCount: Int = 2) : Inp
         dstart: Int,
         dend: Int
     ): CharSequence? {
-        // 打印输入前后坐标变换
-        // Log.d("MoneyInputFilter", "filter: => $start => $end => $dstart => $dend")
+        if (CommonConfig.DEBUG) {
+            // 打印输入前后坐标变换
+            Log.d(TAG, "新输入[source] => ($source)[$start, $end]")
+            Log.d(TAG, "原文本[dest] => ($dest)[$dstart, $dend]")
+            Log.d(TAG, "====================================")
+        }
         // 判断输入内容是否为空
         if (source.isNullOrEmpty()) {
+            if (CommonConfig.DEBUG) {
+                Log.d(TAG, "删除按键")
+                Log.d(TAG, "====================================")
+            }
             return ""
         }
         // 正则判断是否输入为数字或小数点
-        if (!RegexUtils.isMatch("[0-9.]", source)) {
+        val regex = if (keepCount <= 0) {
+            "[0-9]"
+        } else {
+            "[0-9.]"
+        }
+        if (!RegexUtils.isMatch(regex, source)) {
             return ""
         }
-        // 如果首位为0
-        if (dest.toString().startsWith("0")) {
-            // 原字符串存在小数点
-            if (dest.toString().contains(".")) {
-                // 输入位置在0之后
-                if (dstart == 1) {
-                    return ""
+        // 判断光标位置
+        when (dstart) {
+            // 光标在首位，位置索引为0
+            0 -> {
+                // 原字符串不为空
+                if (!dest.isNullOrEmpty()) {
+                    // 新输入的字符串是“0”开始
+                    if (source.startsWith("0")) {
+                        return ""
+                    }
                 }
             }
-            // 原字符串不存在小数点
-            else {
-                // 新输入字符串开始位置不是小数点
-                if (!source.toString().startsWith(".")) {
-                    return ""
+            // 光标在原字符串上的其他位置
+            else -> {
+                // 如果原字符串是“0”开始
+                if (dest?.startsWith("0") == true) {
+                    // 原字符串存在小数点
+                    if (dest.contains(".")) {
+                        // 光标位置与小数点位置索引相同
+                        if (dstart == dest.indexOf(".")) {
+                            return ""
+                        }
+                    }
+                    // 原字符串不存在小数点
+                    else {
+                        // 新输入字符串开始位置不是小数点
+                        if (!source.startsWith(".")) {
+                            return ""
+                        }
+                    }
                 }
             }
+        }
+        // 判断新输入字符串是否有两次及其以上的小数点出现
+        if (source.contains(".") && source.indexOf(".") != source.lastIndexOf(".")) {
+            return ""
+        }
+        // 判断原字符串与新输入字符串是否同时存在小数点
+        if (dest?.contains(".") == true && source.contains(".")) {
+            return ""
         }
         // 判断小数点是否在第一位
         if (source == "." && dstart == 0 && dend == 0) {
             return "0."
         }
         // 判断小数点是否存在，并且小数点后是否已有keepCount位字符
-        val radixPointIndex = dest?.toString()?.indexOf(".") ?: -1
+        val radixPointIndex = dest?.indexOf(".") ?: -1
         if (radixPointIndex != -1 && ((dest?.length ?: 0) - radixPointIndex > keepCount)) {
             // 判断现在输入的字符是不是在小数点后面
             if ((dest?.length ?: 0) - dstart < keepCount + 1) {
@@ -77,6 +116,8 @@ class MoneyInputFilter private constructor(private val keepCount: Int = 2) : Inp
     }
 
     companion object {
+        private val TAG = MoneyInputFilter::class.java.simpleName
+
         /**
          * 创建新实例
          */

@@ -1,10 +1,13 @@
 package com.brave.mvvm.example
 
 import android.os.Bundle
+import com.blankj.utilcode.util.SizeUtils
 import com.brave.mvvm.example.databinding.ActivityMainBinding
 import com.brave.mvvm.example.databinding.ActivityTestBinding
 import com.brave.mvvmrapid.core.common.CommonActivity
 import com.brave.mvvmrapid.core.common.CommonViewModel
+import com.brave.mvvmrapid.core.filter.MoneyInputFilter
+import com.brave.mvvmrapid.utils.drawBackground
 
 /**
  * ***author***     ：brave tou
@@ -30,5 +33,15 @@ class MainActivity : CommonActivity<ActivityMainBinding, MainViewModel>() {
                 else -> "hello world! => 意外"
             }
         }
+        binding.etMoney.drawBackground()
+            .isDrawBackground(true)
+            .setBackgroundColorRes(android.R.color.transparent)
+            .setBorderColorStr("#9450F0")
+            .setBorderWidth(SizeUtils.dp2px(1f))
+            .setRoundedCorners(SizeUtils.dp2px(24f))
+            .build()
+        binding.etMoney.filters = arrayOf(
+            MoneyInputFilter.newInstance(2)
+        )
     }
 }
