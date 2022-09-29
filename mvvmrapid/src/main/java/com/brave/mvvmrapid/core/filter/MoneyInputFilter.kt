@@ -48,6 +48,24 @@ class MoneyInputFilter private constructor(private val keepCount: Int = 2) : Inp
                 Log.d(TAG, "删除按键")
                 Log.d(TAG, "====================================")
             }
+            if (!dest.isNullOrEmpty()) {
+                val newStr = "${dest.subSequence(0, dstart)}${dest.subSequence(dend, dest.length)}"
+                if (CommonConfig.DEBUG) {
+                    Log.d(TAG, "新文本[newStr] => ($newStr)")
+                    Log.d(TAG, "====================================")
+                }
+                if (newStr.startsWith("0.")) {
+                    return ""
+                }
+                if (newStr.startsWith("0")) {
+                    if (newStr.length > 1) {
+                        return dest.subSequence(dstart, dend)
+                    }
+                }
+                if (newStr.startsWith(".")) {
+                    return "0"
+                }
+            }
             return ""
         }
         // 正则判断是否输入为数字或小数点
