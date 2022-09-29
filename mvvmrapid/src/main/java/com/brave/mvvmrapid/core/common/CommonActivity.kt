@@ -1,22 +1,16 @@
-@file:Suppress(
-    "UNCHECKED_CAST",
-    "MemberVisibilityCanBePrivate"
-)
-
 package com.brave.mvvmrapid.core.common
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.annotation.LayoutRes
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
-import com.brave.mvvmrapid.utils.BindingHelper
+import com.brave.mvvmrapid.core.CommonConfig
 import java.lang.reflect.ParameterizedType
 
 /**
@@ -28,32 +22,73 @@ import java.lang.reflect.ParameterizedType
  *
  * ***desc***       ：Activity常用类
  */
+@Suppress(
+    "UNCHECKED_CAST",
+    "REDUNDANT_MODIFIER",
+    "SortModifiers"
+)
 abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     : AppCompatActivity(), ICommonView {
+    companion object {
+        private val TAG = CommonActivity::class.java.simpleName
+    }
+
+    /**
+     * 是否使用[Class]实现（默认使用）
+     *
+     * 如您将其修改为`false`，
+     * 则您将必须实现[binding]与[viewModel]方法
+     */
+    open val isImplUsingClass: Boolean
+        get() = true
+
     // binding
-    private lateinit var _binding: Binding
-    val binding: Binding
-        get() = _binding
+    private var _binding: Binding? = null
+
+    /**
+     * 可重写此方法实现您的[ViewBinding]
+     *
+     * 如未重写此方法，此处会通过[Binding]来反射实现，
+     * 注意此处必须是直接传递泛型。
+     *
+     * 特别注意[Activity.getLayoutInflater]可能为空，
+     * 所以需要使用 `by lazy` 来重写此方法。
+     */
+    open val binding: Binding by lazy {
+        _binding ?: throw RuntimeException(
+            "The [binding] method cannot be empty. You can either use the [Binding] generic parameter or re-implement the [binding] method"
+        )
+    }
 
     // viewModel
-    private lateinit var _viewModel: VM
-    val viewModel: VM
-        get() = _viewModel
+    private var _viewModel: VM? = null
+
+    /**
+     * 可重写此方法实现您的[CommonViewModel]
+     *
+     * 如未重写此方法，此处会通过[ViewModelProvider]来实现,
+     * 注意此处必须是直接传递泛型。
+     */
+    open val viewModel: VM by lazy {
+        _viewModel ?: throw RuntimeException(
+            "The [viewModel] method cannot be empty, you can use the [VM] generic parameter, or you can re-implement the [viewModel] method"
+        )
+    }
 
     /**
      * 是数据绑定，即是[ViewDataBinding]
      */
-    val isDataBinding: Boolean
+    private val isDataBinding: Boolean
         get() = binding is ViewDataBinding
 
     /**
      * 只能在[isDataBinding]为true时使用，否则抛出异常
      */
-    val dataBinding: ViewDataBinding
+    private val dataBinding: ViewDataBinding
         get() = if (isDataBinding) {
             binding as ViewDataBinding
         } else {
-            throw RuntimeException("[${binding}] is not [${ViewDataBinding::class.java}] or a subclass of [${ViewDataBinding::class.java}]")
+            throw RuntimeException("[binding] is not [${ViewDataBinding::class.java}] or a subclass of [${ViewDataBinding::class.java}]")
         }
 
     protected val context: Context by lazy { this }
@@ -85,35 +120,30 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
      * 初始化[ViewBinding]和[CommonViewModel]
      */
     private fun initBinding() {
-        // 类型
-        val type = javaClass.genericSuperclass
-        // 不是带泛型的参数化类型，则抛出异常
-        if (type !is ParameterizedType)
-            throw RuntimeException("$this is not a parameterized type with generics")
-        // 初始化[Binding]
-        _binding = initViewBinding() ?: kotlin.run {
-            // [Binding]
-            val cls = type.actualTypeArguments[0] as Class<Binding>
-            // 反射初始化[Binding]
-            BindingHelper.getBindingByClass(
-                layoutInflater, cls, binding@{
-                    val layoutId = initLayoutId()
-                    return@binding if (null != layoutId) {
-                        DataBindingUtil.setContentView(this, layoutId)
-                    } else null
-                }, null, { binding ->
-                    setContentView(binding.root)
-                })
+        if (isImplUsingClass) {
+            // 类型
+            val type = javaClass.genericSuperclass
+            // 调试当前的泛型的参数化类型
+            if (CommonConfig.DEBUG) {
+                Log.d(TAG, "type => $type")
+                Log.d(TAG, "====================================")
+            }
+            // 是带泛型的参数化类型
+            if (type is ParameterizedType) {
+                // 泛型参数类型数组长度
+                val arguments = type.actualTypeArguments ?: arrayOf()
+                // 如果存在一个及其以上的泛型则取出第一个
+                if (arguments.isNotEmpty()) {
+                    initBindingOrViewModel(arguments[0] as? Class<*>?)
+                }
+                // 如果存在两个及其以上的泛型则取出第二个
+                if (arguments.size > 1) {
+                    initBindingOrViewModel(arguments[1] as? Class<*>?)
+                }
+            }
         }
-        // 泛型参数类型数组长度
-        // val size = type.actualTypeArguments.size
-        // 初始化[VM]
-        _viewModel = initViewModel() ?: kotlin.run {
-            // [VM]
-            val cls = type.actualTypeArguments[1] as Class<VM>
-            // 使用[ViewModelProvider]初始化[VM]
-            ViewModelProvider(this)[viewModelKey, cls]
-        }
+        // 设置布局
+        setContentView(binding.root)
         // [ViewDataBinding]
         if (isDataBinding) {
             // 关联ViewModel
@@ -129,45 +159,33 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     }
 
     /**
+     * 初始化[_binding]或者[_viewModel]
+     */
+    private fun initBindingOrViewModel(clazz: Class<*>?) {
+        if (null == clazz) return
+        when {
+            ViewBinding::class.java.isAssignableFrom(clazz) -> {
+                // 初始化[Binding]
+                _binding = clazz.inflate(layoutInflater)
+            }
+            CommonViewModel::class.java.isAssignableFrom(clazz) -> {
+                // 初始化[VM]
+                val cls = clazz as Class<VM>
+                // 使用[ViewModelProvider]初始化[VM]
+                _viewModel = ViewModelProvider(this)[viewModelKey, cls]
+            }
+        }
+    }
+
+    /**
      * 初始化[viewModel]的id
      */
-    protected abstract val variableId: Int
-
-    /**
-     * 可选方法
-     *
-     * 初始化[Binding]
-     * @return [Binding]
-     */
-    protected fun initViewBinding(): Binding? {
-        return null
-    }
-
-    /**
-     * 可选方法
-     *
-     * 初始化根布局
-     * @return 根布局id
-     */
-    @LayoutRes
-    protected fun initLayoutId(): Int? {
-        return null
-    }
-
-    /**
-     * 可选方法
-     *
-     * 初始化[VM]
-     * @return [VM]
-     */
-    protected fun initViewModel(): VM? {
-        return null
-    }
+    open protected abstract val variableId: Int
 
     /**
      * ViewModel密匙
      */
-    protected val viewModelKey: String
+    open protected val viewModelKey: String
         get() {
             return "taskId$taskId"
         }
@@ -175,7 +193,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     /**
      * 刷新布局
      */
-    fun refreshLayout() {
+    open fun refreshLayout() {
         if (isDataBinding) {
             dataBinding.setVariable(variableId, viewModel)
         }
@@ -199,7 +217,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
      * @param bundle 参数
      */
     @JvmOverloads
-    fun <AC : Activity> startActivity(clz: Class<in AC>, bundle: Bundle? = null) {
+    open fun <AC : Activity> startActivity(clz: Class<in AC>, bundle: Bundle? = null) {
         Intent(this, clz).also {
             bundle?.let { data -> it.putExtras(data) }
             startActivity(it)
@@ -214,7 +232,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
      * @return T 参数类型
      */
     @JvmOverloads
-    fun <T : Any> getParam(key: String, default: T? = null): T? {
+    open fun <T : Any> getParam(key: String, default: T? = null): T? {
         val bundle = intent?.extras ?: return null
         val param = bundle.get(key)
         return if (null != default) {

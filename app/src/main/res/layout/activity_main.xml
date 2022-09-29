@@ -7,20 +7,20 @@
 
         <variable
             name="viewModel"
-            type="com.brave.mvvm.example.MainViewModel" />
+            type="com.brave.mvvm.example.ui.activity.MainViewModel" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        tools:context=".ui.activity.MainActivity">
 
         <TextView
             android:id="@+id/tv_hello"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@={viewModel.helloWorld}"
+            android:text="@{viewModel.helloWorld}"
             android:visibility="@{viewModel.helloVisibility}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +35,7 @@
             android:background="@null"
             android:ellipsize="end"
             android:gravity="start|center_vertical"
-            android:hint="请输入金额"
+            android:hint="@string/str_please_enter_amount"
             android:inputType="numberDecimal"
             android:maxLines="1"
             android:paddingHorizontal="24dp"
@@ -44,6 +44,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_hello" />
+
+        <FrameLayout
+            android:id="@+id/fragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_money" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

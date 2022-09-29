@@ -1,4 +1,4 @@
-package com.brave.mvvm.example
+package com.brave.mvvm.example.ui.activity
 
 import android.app.Application
 import android.view.View

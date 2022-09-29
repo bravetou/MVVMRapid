@@ -1,11 +1,12 @@
-package com.brave.mvvm.example
+package com.brave.mvvm.example.ui.activity
 
 import android.os.Bundle
 import com.blankj.utilcode.util.SizeUtils
+import com.blankj.utilcode.util.ToastUtils
+import com.brave.mvvm.example.BR
 import com.brave.mvvm.example.databinding.ActivityMainBinding
-import com.brave.mvvm.example.databinding.ActivityTestBinding
-import com.brave.mvvmrapid.core.common.CommonActivity
-import com.brave.mvvmrapid.core.common.CommonViewModel
+import com.brave.mvvm.example.ui.fragment.HomeFragment
+import com.brave.mvvmrapid.core.common.ext.CommonDataBindingActivity
 import com.brave.mvvmrapid.core.filter.MoneyInputFilter
 import com.brave.mvvmrapid.utils.drawBackground
 
@@ -18,20 +19,21 @@ import com.brave.mvvmrapid.utils.drawBackground
  *
  * ***desc***       ：Main View
  */
-class MainActivity : CommonActivity<ActivityMainBinding, MainViewModel>() {
-    override val variableId: Int
-        get() = BR.viewModel
+class MainActivity : CommonDataBindingActivity<ActivityMainBinding, MainViewModel>() {
+    override val variableId = BR.viewModel
 
-    var count = 0
+    private var count = 0
 
     override fun initView(savedInstanceState: Bundle?) {
         binding.tvHello.setOnClickListener {
-            viewModel.helloWorld.value = when (++count % 3) {
+            val text = when (++count % 3) {
                 0 -> "hello world! => 0"
                 1 -> "hello world! => 1"
                 2 -> "hello world! => 2"
                 else -> "hello world! => 意外"
             }
+            viewModel.helloWorld.value = text
+            ToastUtils.showLong(text)
         }
         binding.etMoney.drawBackground()
             .isDrawBackground(true)
@@ -43,5 +45,9 @@ class MainActivity : CommonActivity<ActivityMainBinding, MainViewModel>() {
         binding.etMoney.filters = arrayOf(
             MoneyInputFilter.newInstance(2)
         )
+
+        supportFragmentManager.beginTransaction()
+            .add(binding.fragment.id, HomeFragment(), HomeFragment.TAG)
+            .commitNow()
     }
 }

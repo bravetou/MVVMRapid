@@ -13,6 +13,13 @@ import com.brave.mvvmrapid.core.CommonConfig
  * ***desc***       ：App
  */
 class App : CommonApp() {
+    companion object {
+        val instance: App
+            get() {
+                return CommonApp.instance as App
+            }
+    }
+
     override fun onCreate() {
         super.onCreate()
         CommonConfig.DEBUG = true
