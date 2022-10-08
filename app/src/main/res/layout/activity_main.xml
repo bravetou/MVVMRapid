@@ -27,6 +27,14 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="hello world!" />
 
+        <Button
+            android:id="@+id/btn_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_hello" />
+
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_money"
             android:layout_width="0dp"
@@ -43,7 +51,7 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_hello" />
+            app:layout_constraintTop_toBottomOf="@id/btn_test" />
 
         <FrameLayout
             android:id="@+id/fragment"

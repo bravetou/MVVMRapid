@@ -14,6 +14,7 @@ import com.brave.mvvmrapid.core.CommonConfig
  */
 class App : CommonApp() {
     companion object {
+        @JvmStatic
         val instance: App
             get() {
                 return CommonApp.instance as App

@@ -1,6 +1,7 @@
 package com.brave.mvvm.example.ui.activity
 
 import android.os.Bundle
+import android.util.Log
 import com.blankj.utilcode.util.SizeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.brave.mvvm.example.BR
@@ -35,6 +36,9 @@ class MainActivity : CommonDataBindingActivity<ActivityMainBinding, MainViewMode
             viewModel.helloWorld.value = text
             ToastUtils.showLong(text)
         }
+        binding.btnTest.setOnClickListener {
+            viewModel.testScope()
+        }
         binding.etMoney.drawBackground()
             .isDrawBackground(true)
             .setBackgroundColorRes(android.R.color.transparent)
@@ -45,6 +49,16 @@ class MainActivity : CommonDataBindingActivity<ActivityMainBinding, MainViewMode
         binding.etMoney.filters = arrayOf(
             MoneyInputFilter.newInstance(2)
         )
+
+        viewModel.defUI.onStart.observe(this) {
+            Log.d("MainActivity", "onStart: ================== ======>")
+        }
+        viewModel.defUI.onError.observe(this) {
+            Log.d("MainActivity", "onError: ================== ======>")
+        }
+        viewModel.defUI.onComplete.observe(this) {
+            Log.d("MainActivity", "onComplete: ================== ======>")
+        }
 
         supportFragmentManager.beginTransaction()
             .add(binding.fragment.id, HomeFragment(), HomeFragment.TAG)

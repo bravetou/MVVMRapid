@@ -108,6 +108,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
         initSystemBar()
         // 私有的初始化[ViewBinding]和[CommonViewModel]的方法
         initBinding()
+        updateDefaultUI()
         initGlobalBus()
         initView(savedInstanceState)
         initData()
@@ -210,6 +211,19 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     override fun initObserver() {}
 
     override fun initEnd() {}
+
+    /**
+     * 默认UI更新
+     */
+    private fun updateDefaultUI() {
+        viewModel.defUI.onStart.observe(this) { text -> onStart(text ?: "") }
+        viewModel.defUI.onComplete.observe(this) { onComplete() }
+        viewModel.defUI.onError.observe(this) { e -> onError(e) }
+    }
+
+    open fun onStart(text: String) {}
+    open fun onComplete() {}
+    open fun onError(e: Throwable) {}
 
     /**
      * 跳转页面
