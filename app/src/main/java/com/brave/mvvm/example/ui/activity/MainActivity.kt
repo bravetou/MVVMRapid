@@ -50,18 +50,20 @@ class MainActivity : CommonDataBindingActivity<ActivityMainBinding, MainViewMode
             MoneyInputFilter.newInstance(2)
         )
 
-        viewModel.defUI.onStart.observe(this) {
-            Log.d("MainActivity", "onStart: ================== ======>")
-        }
-        viewModel.defUI.onError.observe(this) {
-            Log.d("MainActivity", "onError: ================== ======>")
-        }
-        viewModel.defUI.onComplete.observe(this) {
-            Log.d("MainActivity", "onComplete: ================== ======>")
-        }
-
         supportFragmentManager.beginTransaction()
             .add(binding.fragment.id, HomeFragment(), HomeFragment.TAG)
             .commitNow()
+    }
+
+    override fun onStart(text: String) {
+        Log.d("MainActivity", "onStart: ================== ======> $text")
+    }
+
+    override fun onComplete() {
+        Log.d("MainActivity", "onComplete: ================== ======>")
+    }
+
+    override fun onError(e: Throwable) {
+        Log.d("MainActivity", "onError: ================== ======> $e")
     }
 }

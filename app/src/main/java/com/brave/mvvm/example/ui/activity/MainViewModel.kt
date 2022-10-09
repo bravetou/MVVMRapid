@@ -21,14 +21,6 @@ class MainViewModel(application: Application) : CommonViewModel(application) {
     val helloVisibility = MutableLiveData(View.VISIBLE)
 
     fun testScope() {
-
-        val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-            Log.d(
-                "exceptionHandler2",
-                "${coroutineContext[CoroutineName]?.name ?: ""} 处理异常 ：$throwable"
-            )
-        }
-
         launch(true, {
             supervisorScope {
 
@@ -62,6 +54,9 @@ class MainViewModel(application: Application) : CommonViewModel(application) {
                     }
                 }
 
+                launch(it) {
+                    async { throw NullPointerException("测试async异常拦截") }
+                }
             }
         })
     }
