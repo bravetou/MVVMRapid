@@ -36,6 +36,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_hello" />
 
+        <Button
+            android:id="@+id/btn_test_dispatcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/str_coroutine_scheduler"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_test" />
+
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_money"
             android:layout_width="0dp"
@@ -52,7 +61,7 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_test" />
+            app:layout_constraintTop_toBottomOf="@id/btn_test_dispatcher" />
 
         <FrameLayout
             android:id="@+id/fragment"

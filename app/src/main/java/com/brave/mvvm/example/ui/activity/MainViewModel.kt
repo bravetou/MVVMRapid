@@ -5,7 +5,9 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.brave.mvvmrapid.core.common.CommonViewModel
+import com.brave.mvvmrapid.utils.launchScope
 import kotlinx.coroutines.*
+import kotlin.random.Random
 
 /**
  * ***author***     ：brave tou
@@ -56,6 +58,22 @@ class MainViewModel(application: Application) : CommonViewModel(application) {
 
                 launch(it) {
                     async { throw NullPointerException("测试async异常拦截") }
+                }
+            }
+        })
+    }
+
+    fun testDispatcher() {
+        val dispatcher = newFixedThreadPoolContext(4, "CPool")
+        launch(false, {
+            coroutineScope {
+                repeat(1000) {
+                    launchScope(dispatcher, block = {
+                        // 不断计算
+                        List(1000) { Random.nextLong() }.maxOrNull()
+                        val threadName = Thread.currentThread().name
+                        println("Running on thread: $threadName")
+                    })
                 }
             }
         })

@@ -36,9 +36,15 @@ class MainActivity : CommonDataBindingActivity<ActivityMainBinding, MainViewMode
             viewModel.helloWorld.value = text
             ToastUtils.showLong(text)
         }
+
         binding.btnTest.setOnClickListener {
             viewModel.testScope()
         }
+
+        binding.btnTestDispatcher.setOnClickListener {
+            viewModel.testDispatcher()
+        }
+
         binding.etMoney.drawBackground()
             .isDrawBackground(true)
             .setBackgroundColorRes(android.R.color.transparent)
