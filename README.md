@@ -33,7 +33,7 @@ MVVM rapid development.
 ```groovy
 	dependencies {
         // Tag uses the distribution you need    
-        implementation 'com.gitee.bravetou:mvvm-rapid:Tag'
+        implementation 'com.github.bravetou:MVVMRapid:Tag'
 	}
 ```
 
