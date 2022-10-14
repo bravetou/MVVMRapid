@@ -20,9 +20,7 @@ import java.util.concurrent.CancellationException
  *
  * ***desc***       ：ViewModel常用类
  */
-@Suppress(
-    "RedundantOverride", "unused"
-)
+@Suppress("RedundantOverride", "unused")
 open class CommonViewModel(
     application: Application
 ) : AndroidViewModel(application), ICommonViewModel {

@@ -23,11 +23,7 @@ import java.lang.reflect.ParameterizedType
  *
  * ***desc***       ：Fragment常用类
  */
-@Suppress(
-    "UNCHECKED_CAST",
-    "REDUNDANT_MODIFIER",
-    "SortModifiers"
-)
+@Suppress("UNCHECKED_CAST", "REDUNDANT_MODIFIER", "SortModifiers")
 abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
     : Fragment(), ICommonView {
     companion object {
@@ -114,15 +110,9 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
             }
             // 是带泛型的参数化类型
             if (type is ParameterizedType) {
-                // 泛型参数类型数组长度
-                val arguments = type.actualTypeArguments ?: arrayOf()
-                // 如果存在一个及其以上的泛型则取出第一个
-                if (arguments.isNotEmpty()) {
-                    initBindingOrViewModel(arguments[0] as? Class<*>?, inflater)
-                }
-                // 如果存在两个及其以上的泛型则取出第二个
-                if (arguments.size > 1) {
-                    initBindingOrViewModel(arguments[1] as? Class<*>?, inflater)
+                // 循环当前泛型
+                type.actualTypeArguments.forEach { argument ->
+                    argument?.let { initBindingOrViewModel(it as? Class<*>?, inflater) }
                 }
             }
         }
@@ -236,12 +226,10 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
      */
     @JvmOverloads
     fun <AC : Activity> startActivity(clz: Class<in AC>, bundle: Bundle? = null) {
-        activity?.apply {
-            Intent(this, clz).also {
-                bundle?.let { data -> it.putExtras(data) }
-                startActivity(it)
-            }
-        }
+        val activity = activity ?: return
+        val intent = Intent(activity, clz)
+        bundle?.let { data -> intent.putExtras(data) }
+        startActivity(intent)
     }
 
     /**
@@ -253,18 +241,8 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
      */
     @JvmOverloads
     fun <T : Any> getParam(key: String, default: T? = null): T? {
-        activity?.apply {
-            val bundle = intent?.extras ?: return null
-            val param = bundle.get(key)
-            return if (null != default) {
-                if (null == param) default
-                else param as T
-            } else {
-                if (null == param) null
-                else param as T
-            }
-        }
-        return null
+        val bundle = activity?.intent?.extras ?: return null
+        return (bundle.get(key) as? T?) ?: default
     }
 
     /**
@@ -277,13 +255,6 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
     @JvmOverloads
     fun <T : Any> getArgumentsParam(key: String, default: T? = null): T? {
         val bundle = arguments ?: return null
-        val param = bundle.get(key)
-        return if (null != default) {
-            if (null == param) default
-            else param as T
-        } else {
-            if (null == param) null
-            else param as T
-        }
+        return (bundle.get(key) as? T?) ?: default
     }
 }
