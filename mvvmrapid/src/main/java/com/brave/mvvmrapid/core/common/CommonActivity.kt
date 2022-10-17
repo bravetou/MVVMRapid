@@ -51,7 +51,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
      * 所以需要使用 `by lazy` 来重写此方法。
      */
     open val binding: Binding by lazy {
-        _binding ?: throw RuntimeException(
+        _binding ?: throw NullPointerException(
             "The [binding] method cannot be empty. You can either use the [Binding] generic parameter or re-implement the [binding] method"
         )
     }
@@ -66,7 +66,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
      * 注意此处必须是直接传递泛型。
      */
     open val viewModel: VM by lazy {
-        _viewModel ?: throw RuntimeException(
+        _viewModel ?: throw NullPointerException(
             "The [viewModel] method cannot be empty, you can use the [VM] generic parameter, or you can re-implement the [viewModel] method"
         )
     }
