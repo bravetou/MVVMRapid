@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.brave.mvvmrapid.core.CommonConfig
+import com.brave.mvvmrapid.utils.inflate
 import java.lang.reflect.ParameterizedType
 
 /**

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.brave.mvvmrapid.core.CommonConfig
+import com.brave.mvvmrapid.utils.inflate
 import java.lang.reflect.ParameterizedType
 
 /**
@@ -112,7 +113,9 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
             if (type is ParameterizedType) {
                 // 循环当前泛型
                 type.actualTypeArguments.forEach { argument ->
-                    argument?.let { initBindingOrViewModel(it as? Class<*>?, inflater) }
+                    argument?.let {
+                        initBindingOrViewModel(it as? Class<*>?, inflater, container)
+                    }
                 }
             }
         }
@@ -156,12 +159,16 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
     /**
      * 初始化[_binding]或者[_viewModel]
      */
-    private fun initBindingOrViewModel(clazz: Class<*>?, inflater: LayoutInflater) {
+    private fun initBindingOrViewModel(
+        clazz: Class<*>?,
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) {
         if (null == clazz) return
         when {
             ViewBinding::class.java.isAssignableFrom(clazz) -> {
                 // 初始化[Binding]
-                _binding = clazz.inflate(inflater)
+                _binding = clazz.inflate(inflater, container, false)
             }
             CommonViewModel::class.java.isAssignableFrom(clazz) -> {
                 // 初始化[VM]

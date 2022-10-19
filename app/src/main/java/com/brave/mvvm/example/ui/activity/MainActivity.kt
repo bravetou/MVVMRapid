@@ -2,10 +2,15 @@ package com.brave.mvvm.example.ui.activity
 
 import android.os.Bundle
 import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.ResourceUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.brave.mvvm.example.BR
+import com.brave.mvvm.example.R
+import com.brave.mvvm.example.bean.FunctionBean
 import com.brave.mvvm.example.databinding.ActivityMainBinding
+import com.brave.mvvm.example.ui.adapter.FunctionAdapter
 import com.brave.mvvm.example.ui.fragment.HomeFragment
 import com.brave.mvvmrapid.core.common.ext.CommonDataBindingActivity
 import com.brave.mvvmrapid.core.filter.MoneyInputFilter
@@ -25,7 +30,23 @@ class MainActivity : CommonDataBindingActivity<ActivityMainBinding, MainViewMode
 
     private var count = 0
 
+    private val adapter by lazy {
+        FunctionAdapter()
+    }
+
+    private val data by lazy {
+        mutableListOf(
+            FunctionBean(0, R.mipmap.ic_launcher, "CommonActivity"),
+            FunctionBean(1, R.mipmap.ic_launcher, "CommonViewBindingActivity"),
+            FunctionBean(2, R.mipmap.ic_launcher, "CommonDataBindingActivity"),
+        )
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
+        binding.rvList.layoutManager = LinearLayoutManager(this)
+        binding.rvList.adapter = adapter
+        adapter.setNewInstance(data)
+
         binding.tvHello.setOnClickListener {
             val text = when (++count % 3) {
                 0 -> "hello world! => 0"

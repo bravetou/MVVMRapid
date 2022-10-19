@@ -49,6 +49,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation project(path: ':mvvmrapid')
+    implementation project(path: ':mvvmrapid-rv')
     // implementation 'com.github.bravetou:MVVMRapid:1.0.2'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
@@ -59,5 +60,7 @@ dependencies {
     // 防64K
     implementation 'androidx.multidex:multidex:2.0.1'
     // utilcodex 工具
-    implementation 'com.blankj:utilcodex:1.31.0'
+    implementation 'com.blankj:utilcodex:1.31.1'
+
+    implementation "io.github.cymchad:BaseRecyclerViewAdapterHelper:3.0.9"
 }
