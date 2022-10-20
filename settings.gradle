@@ -18,3 +18,5 @@ rootProject.name = "MVVMRapid"
 include ':app'
 include ':mvvmrapid'
 include ':mvvmrapid-rv'
+include ':binding-delegate-no-reflection'
+include ':binding-delegate-reflect'

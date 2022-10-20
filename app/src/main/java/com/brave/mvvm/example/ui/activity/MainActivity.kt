@@ -3,7 +3,6 @@ package com.brave.mvvm.example.ui.activity
 import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.ResourceUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.brave.mvvm.example.BR

@@ -20,7 +20,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt') , 'proguard-rules.pro'
         }
     }
     // 绑定
@@ -43,7 +43,6 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':mvvmrapid')
     implementation rootProject.ext.dependencies.coreKtx
     implementation rootProject.ext.dependencies.appcompat
     implementation rootProject.ext.dependencies.material
@@ -52,7 +51,6 @@ dependencies {
     implementation rootProject.ext.dependencies.fragmentKtx
     implementation rootProject.ext.dependencies.multidex
     implementation rootProject.ext.dependencies.utilcodex
-    implementation rootProject.ext.dependencies.baseRecyclerViewAdapterHelper
 
     testImplementation rootProject.ext.dependencies.junit
     androidTestImplementation rootProject.ext.dependencies.androidxJunit
