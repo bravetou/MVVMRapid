@@ -26,9 +26,8 @@ open class CommonViewModel(
 ) : AndroidViewModel(application), ICommonViewModel {
     protected open val app: Application by lazy { getApplication() }
 
-    companion object {
-        private val TAG = CommonViewModel::class.java.simpleName
-    }
+    @Suppress("PrivatePropertyName")
+    private val TAG by lazy { this::class.java.simpleName }
 
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)

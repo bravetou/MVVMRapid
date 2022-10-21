@@ -26,9 +26,8 @@ import java.lang.reflect.ParameterizedType
 @Suppress("UNCHECKED_CAST", "REDUNDANT_MODIFIER", "SortModifiers")
 abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     : AppCompatActivity(), ICommonView {
-    companion object {
-        private val TAG = CommonActivity::class.java.simpleName
-    }
+    @Suppress("PrivatePropertyName")
+    private val TAG by lazy { this::class.java.simpleName }
 
     /**
      * 是否使用[Class]实现（默认使用）

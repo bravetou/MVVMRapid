@@ -29,9 +29,8 @@ import java.lang.reflect.ParameterizedType
 @Suppress("UNCHECKED_CAST", "REDUNDANT_MODIFIER", "SortModifiers")
 abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
     : Fragment(), ICommonView {
-    companion object {
-        private val TAG = CommonFragment::class.java.simpleName
-    }
+    @Suppress("PrivatePropertyName")
+    private val TAG by lazy { this::class.java.simpleName }
 
     /**
      * 是否使用[Class]实现（默认使用）
@@ -231,9 +230,9 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
      * 默认UI更新
      */
     private fun updateDefaultUI() {
-        viewModel.defUI.onStart.observe(this) { text -> onStart(text ?: "") }
-        viewModel.defUI.onComplete.observe(this) { onComplete() }
-        viewModel.defUI.onError.observe(this) { e -> onError(e) }
+        viewModel.defUI.onStart.observe(viewLifecycleOwner) { text -> onStart(text ?: "") }
+        viewModel.defUI.onComplete.observe(viewLifecycleOwner) { onComplete() }
+        viewModel.defUI.onError.observe(viewLifecycleOwner) { e -> onError(e) }
     }
 
     open fun onStart(text: String) {}

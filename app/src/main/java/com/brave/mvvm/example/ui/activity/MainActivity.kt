@@ -62,7 +62,12 @@ class MainActivity : CommonDataBindingActivity<ActivityMainBinding, MainViewMode
         }
 
         binding.btnTestDispatcher.setOnClickListener {
-            viewModel.testDispatcher()
+            // viewModel.testDispatcher()
+            supportFragmentManager.findFragmentByTag(HomeFragment.TAG)?.let { fragment ->
+                supportFragmentManager.beginTransaction()
+                    .remove(fragment)
+                    .commitNow()
+            }
         }
 
         binding.etMoney.drawBackground()
