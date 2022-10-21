@@ -3,14 +3,17 @@ package com.brave.mvvm.example.ui.activity
 import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewbinding.ViewBinding
 import com.blankj.utilcode.util.SizeUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.brave.mvvm.example.BR
 import com.brave.mvvm.example.R
 import com.brave.mvvm.example.bean.FunctionBean
 import com.brave.mvvm.example.databinding.ActivityMainBinding
+import com.brave.mvvm.example.databinding.ActivityMainBindingImpl
 import com.brave.mvvm.example.ui.adapter.FunctionAdapter
 import com.brave.mvvm.example.ui.fragment.HomeFragment
+import com.brave.mvvmrapid.core.common.CommonActivity
 import com.brave.mvvmrapid.core.common.ext.CommonDataBindingActivity
 import com.brave.mvvmrapid.core.filter.MoneyInputFilter
 import com.brave.mvvmrapid.utils.drawBackground
@@ -24,7 +27,7 @@ import com.brave.mvvmrapid.utils.drawBackground
  *
  * ***desc***       ：Main View
  */
-class MainActivity : CommonDataBindingActivity<ActivityMainBinding, MainViewModel>() {
+class MainActivity : TransferActivity<ActivityMainBinding>() {
     override val variableId = BR.viewModel
 
     private var count = 0
@@ -98,3 +101,5 @@ class MainActivity : CommonDataBindingActivity<ActivityMainBinding, MainViewMode
         Log.d("MainActivity", "onError: ================== ======> $e")
     }
 }
+
+abstract class TransferActivity<Binding : ViewBinding> : CommonActivity<Binding, MainViewModel>()

@@ -29,10 +29,10 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
 
     private val allGenerics by lazy { GenericsHelper(javaClass).classes }
 
-    val binding: Binding by viewBinding(viewBinder = {
+    open val binding: Binding by viewBinding(viewBinder = {
         initViewBinding() ?: allGenerics
             .filterIsInstance<Class<Binding>>()
-            .elementAtOrNull(0)
+            .find { ViewBinding::class.java.isAssignableFrom(it) }
             ?.inflate(layoutInflater)
         ?: error("Generic <Binding> not found")
     }, onViewDestroyed = {
@@ -41,10 +41,10 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
 
     open fun initViewBinding(): Binding? = null
 
-    val viewModel: VM by lazy {
+    open val viewModel: VM by lazy {
         initViewModel() ?: allGenerics
             .filterIsInstance<Class<VM>>()
-            .elementAtOrNull(0)
+            .find { CommonViewModel::class.java.isAssignableFrom(it) }
             ?.let { ViewModelProvider(this)[viewModelKey, it] }
         ?: error("Generic <VM> not found")
     }

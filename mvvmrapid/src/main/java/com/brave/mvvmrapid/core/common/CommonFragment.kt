@@ -3,7 +3,6 @@ package com.brave.mvvmrapid.core.common
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +10,10 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
-import com.brave.mvvmrapid.core.CommonConfig
+import com.blankj.utilcode.util.ResourceUtils
 import com.brave.mvvmrapid.utils.GenericsHelper
 import com.brave.mvvmrapid.utils.inflate
 import com.brave.viewbindingdelegate.viewBinding
-import java.lang.reflect.ParameterizedType
 
 /**
  * ***author***     ：brave tou
@@ -26,121 +24,45 @@ import java.lang.reflect.ParameterizedType
  *
  * ***desc***       ：Fragment常用类
  */
-@Suppress("UNCHECKED_CAST", "REDUNDANT_MODIFIER", "SortModifiers")
+@Suppress("UNCHECKED_CAST", "REDUNDANT_MODIFIER", "SortModifiers", "PrivatePropertyName")
 abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
     : Fragment(), ICommonView {
-    @Suppress("PrivatePropertyName")
     private val TAG by lazy { this::class.java.simpleName }
 
-    /**
-     * 是否使用[Class]实现（默认使用）
-     *
-     * 如您将其修改为`false`，
-     * 则您将必须实现[binding]与[viewModel]方法
-     */
-    open val isImplUsingClass: Boolean
-        get() = true
+    private val allGenerics by lazy { GenericsHelper(javaClass).classes }
 
-    // binding
-    private var _binding: Binding? = null
-
-    /**
-     * 可重写此方法实现您的[ViewBinding]
-     *
-     * 如未重写此方法，此处会通过[Binding]来反射实现，
-     * 注意此处必须是直接传递泛型。
-     *
-     * 特别注意[Fragment.getLayoutInflater]可能为空，
-     * 所以需要使用 `by lazy` 来重写此方法。
-     */
-    open val binding: Binding by lazy {
-        _binding ?: throw NullPointerException(
-            "The [binding] method cannot be empty. You can either use the [Binding] generic parameter or re-implement the [binding] method"
-        )
-    }
-
-    val binding2 by viewBinding(viewBinder = {
-        GenericsHelper(it.javaClass).classes
+    open val binding: Binding by viewBinding(viewBinder = {
+        initViewBinding() ?: allGenerics
             .filterIsInstance<Class<Binding>>()
-            .elementAtOrNull(0)
-            ?.inflate<Binding>(layoutInflater)
-            ?: error("Generic <Binding> not found")
+            .find { ViewBinding::class.java.isAssignableFrom(it) }
+            ?.inflate(layoutInflater)
+        ?: error("Generic <Binding> not found")
     }, onViewDestroyed = {
-        if (it is ViewDataBinding) {
-            it.unbind()
-        }
+        if (it is ViewDataBinding) it.unbind()
     })
 
-    // viewModel
-    private var _viewModel: VM? = null
+    open fun initViewBinding(): Binding? = null
 
-    /**
-     * 可重写此方法实现您的[CommonViewModel]
-     *
-     * 如未重写此方法，此处会通过[ViewModelProvider]来实现,
-     * 注意此处必须是直接传递泛型。
-     */
     open val viewModel: VM by lazy {
-        _viewModel ?: throw NullPointerException(
-            "The [viewModel] method cannot be empty, you can use the [VM] generic parameter, or you can re-implement the [viewModel] method"
-        )
+        initViewModel() ?: allGenerics
+            .filterIsInstance<Class<VM>>()
+            .find { CommonViewModel::class.java.isAssignableFrom(it) }
+            ?.let { ViewModelProvider(this)[viewModelKey, it] }
+        ?: error("Generic <VM> not found")
     }
 
-    /**
-     * 是数据绑定，即是[ViewDataBinding]
-     */
-    private val isDataBinding: Boolean
-        get() = binding is ViewDataBinding
-
-    /**
-     * 只能在[isDataBinding]为true时使用，否则抛出异常
-     */
-    private val dataBinding: ViewDataBinding
-        get() = if (isDataBinding) {
-            binding as ViewDataBinding
-        } else {
-            throw RuntimeException("[binding] is not [${ViewDataBinding::class.java}] or a subclass of [${ViewDataBinding::class.java}]")
-        }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        if (isDataBinding) {
-            dataBinding.unbind()
-        }
-    }
+    open fun initViewModel(): VM? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        if (isImplUsingClass) {
-            // 类型
-            val type = javaClass.genericSuperclass
-            // 调试当前的泛型的参数化类型
-            if (CommonConfig.DEBUG) {
-                Log.d(TAG, "type => $type")
-                Log.d(TAG, "====================================")
-            }
-            // 是带泛型的参数化类型
-            if (type is ParameterizedType) {
-                // 循环当前泛型
-                type.actualTypeArguments.forEach { argument ->
-                    argument?.let {
-                        initBindingOrViewModel(it as? Class<*>?, inflater, container)
-                    }
-                }
-            }
-        }
-        // 设置布局
-        return binding.root
-    }
+    ): View? = binding.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initStart()
         initSystemBar()
-        // 私有的初始化[CommonViewModel]的方法
         initBinding()
         updateDefaultUI()
         initGlobalBus()
@@ -151,44 +73,16 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
         initEnd()
     }
 
-    /**
-     * 初始化[ViewDataBinding]与[CommonViewModel]的绑定
-     */
     private fun initBinding() {
         // [ViewDataBinding]
-        if (isDataBinding) {
+        if (binding is ViewDataBinding) {
+            val dataBinding = binding as ViewDataBinding
             // 关联ViewModel
             dataBinding.setVariable(variableId, viewModel)
             // 支持LiveData绑定xml，数据改变，UI自动会更新
             dataBinding.lifecycleOwner = this
             // 让ViewModel拥有View的生命周期感应
             lifecycle.addObserver(viewModel)
-            // 弃用
-            // 注入[LifecycleOwner]生命周期
-            // this.viewModel?.injectLifecycleOwner(this)
-        }
-    }
-
-    /**
-     * 初始化[_binding]或者[_viewModel]
-     */
-    private fun initBindingOrViewModel(
-        clazz: Class<*>?,
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ) {
-        if (null == clazz) return
-        when {
-            ViewBinding::class.java.isAssignableFrom(clazz) -> {
-                // 初始化[Binding]
-                _binding = clazz.inflate(inflater, container, false)
-            }
-            CommonViewModel::class.java.isAssignableFrom(clazz) -> {
-                // 初始化[VM]
-                val cls = clazz as Class<VM>
-                // 使用[ViewModelProvider]初始化[VM]
-                _viewModel = ViewModelProvider(this)[viewModelKey, cls]
-            }
         }
     }
 
@@ -200,16 +94,14 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
     /**
      * ViewModel密匙
      */
-    open protected val viewModelKey: String
-        get() {
-            return "taskId$tag"
-        }
+    open protected val viewModelKey: String = "taskId_${TAG}_$tag"
 
     /**
      * 刷新布局
      */
     open fun refreshLayout() {
-        if (isDataBinding) {
+        if (binding is ViewDataBinding) {
+            val dataBinding = binding as ViewDataBinding
             dataBinding.setVariable(variableId, viewModel)
         }
     }
