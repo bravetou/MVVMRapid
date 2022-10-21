@@ -66,6 +66,10 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
             .elementAtOrNull(0)
             ?.inflate<Binding>(layoutInflater)
             ?: error("Generic <Binding> not found")
+    }, onViewDestroyed = {
+        if (it is ViewDataBinding) {
+            it.unbind()
+        }
     })
 
     // viewModel
