@@ -1,4 +1,5 @@
 @file:JvmName("ActivityViewBindings")
+@file:Suppress("unused")
 
 package com.brave.viewbindingdelegate
 
@@ -17,94 +18,101 @@ private class ActivityViewBindingProperty<in A : ComponentActivity, out Binding 
     private val viewNeedsInitialization: Boolean = true,
     viewBinder: (A) -> Binding
 ) : LifecycleViewBindingProperty<A, Binding>(viewBinder, onViewDestroyed) {
-    override fun getLifecycleOwner(thisRef: A): LifecycleOwner {
-        return thisRef
-    }
+    override fun getLifecycleOwner(thisRef: A): LifecycleOwner =
+        thisRef
 
-    override fun isViewInitialized(thisRef: A): Boolean {
-        return viewNeedsInitialization && thisRef.window != null
-    }
+    override fun isViewInitialized(thisRef: A): Boolean =
+        viewNeedsInitialization && thisRef.window != null
 }
 
 /**
- * 创建新的与[Activity][ComponentActivity]相关联的[ViewBinding]，
- * 并允许自定义[View]绑定到视图绑定的方式。
+ * 创建一个与[活动][ComponentActivity]关联的[ViewBinding]
+ * @param viewBinder 视图绑定函数
  */
 @JvmName("viewBindingActivity")
 fun <A : ComponentActivity, Binding : ViewBinding> ComponentActivity.viewBinding(
     viewBinder: (A) -> Binding
-): ViewBindingProperty<A, Binding> {
-    return viewBinding(emptyVbCallback(), viewBinder)
-}
+): ViewBindingProperty<A, Binding> = viewBinding(
+    emptyVbCallback(),
+    viewBinder
+)
 
 /**
- * 创建新的与[Activity][ComponentActivity]相关联的[ViewBinding]，
- * 并允许自定义[View]绑定到视图绑定的方式。
+ * 创建一个与[活动][ComponentActivity]关联的[ViewBinding]
+ * @param viewBinder 视图绑定函数
+ * @param onViewDestroyed 视图销毁回调函数
  */
 @JvmName("viewBindingActivityWithCallbacks")
 fun <A : ComponentActivity, Binding : ViewBinding> ComponentActivity.viewBinding(
     onViewDestroyed: (Binding) -> Unit = {},
     viewBinder: (A) -> Binding
-): ViewBindingProperty<A, Binding> {
-    return ActivityViewBindingProperty(onViewDestroyed, viewBinder = viewBinder)
-}
+): ViewBindingProperty<A, Binding> = ActivityViewBindingProperty(
+    onViewDestroyed,
+    viewBinder = viewBinder
+)
 
 /**
- * 创建新的与[Activity][ComponentActivity]相关联的[ViewBinding]，
- * 并允许自定义[View]绑定到视图绑定的方式。
+ * 创建一个与[活动][ComponentActivity]关联的[ViewBinding]
+ * @param vbFactory 创建[ViewBinding]的函数。可以直接使用*MyViewBinding::bind*
+ * @param viewProvider [View]提供者。此处默认使用[Activity][android.app.Activity]中的根[View]
  */
 @JvmName("viewBindingActivity")
 inline fun <A : ComponentActivity, Binding : ViewBinding> ComponentActivity.viewBinding(
     crossinline vbFactory: (View) -> Binding,
     crossinline viewProvider: (A) -> View = ::findRootView
-): ViewBindingProperty<A, Binding> {
-    return viewBinding(emptyVbCallback(), vbFactory, viewProvider)
-}
+): ViewBindingProperty<A, Binding> = viewBinding(
+    emptyVbCallback(),
+    vbFactory,
+    viewProvider
+)
 
 /**
- * 创建新的与[Activity][ComponentActivity]相关联的[ViewBinding]，
- * 并允许自定义[View]绑定到视图绑定的方式。
+ * 创建一个与[活动][ComponentActivity]关联的[ViewBinding]
+ * @param onViewDestroyed 视图销毁回调函数
+ * @param vbFactory 创建[ViewBinding]的函数。可以直接使用*MyViewBinding::bind*
+ * @param viewProvider [View]提供者。此处默认使用[Activity][android.app.Activity]中的根[View]
  */
 @JvmName("viewBindingActivityWithCallbacks")
 inline fun <A : ComponentActivity, Binding : ViewBinding> ComponentActivity.viewBinding(
     noinline onViewDestroyed: (Binding) -> Unit = {},
     crossinline vbFactory: (View) -> Binding,
     crossinline viewProvider: (A) -> View = ::findRootView
-): ViewBindingProperty<A, Binding> {
-    return viewBinding(onViewDestroyed) { activity -> vbFactory(viewProvider(activity)) }
+): ViewBindingProperty<A, Binding> = viewBinding(
+    onViewDestroyed
+) { activity ->
+    vbFactory(viewProvider(activity))
 }
 
 /**
- * 创建新的与[Activity][ComponentActivity]相关联的[ViewBinding]，
- * 并允许自定义[View]绑定到视图绑定的方式。
- *
- * @param vbFactory 创建[ViewBinding]的新实例的函数。可以使用***MyViewBinding::bind***
- * @param viewBindingRootId 根视图的id，它将用作视图绑定的根
+ * 创建一个与[活动][ComponentActivity]关联的[ViewBinding]
+ * @param vbFactory 创建[ViewBinding]的函数。可以直接使用*MyViewBinding::bind*
+ * @param viewBindingRootId [View] ID
  */
 @JvmName("viewBindingActivity")
 inline fun <Binding : ViewBinding> ComponentActivity.viewBinding(
     crossinline vbFactory: (View) -> Binding,
     @IdRes viewBindingRootId: Int
-): ViewBindingProperty<ComponentActivity, Binding> {
-    return viewBinding(emptyVbCallback(), vbFactory, viewBindingRootId)
-}
+): ViewBindingProperty<ComponentActivity, Binding> = viewBinding(
+    emptyVbCallback(),
+    vbFactory,
+    viewBindingRootId
+)
 
 /**
- * 创建新的与[Activity][ComponentActivity]相关联的[ViewBinding]，
- * 并允许自定义[View]绑定到视图绑定的方式。
- *
- * @param vbFactory 创建[ViewBinding]的新实例的函数。可以使用***MyViewBinding::bind***
- * @param viewBindingRootId 根视图的id，它将用作视图绑定的根
+ * 创建一个与[活动][ComponentActivity]关联的[ViewBinding]
+ * @param onViewDestroyed 视图销毁回调函数
+ * @param vbFactory 创建[ViewBinding]的函数。可以直接使用*MyViewBinding::bind*
+ * @param viewBindingRootId [View] ID
  */
 @JvmName("viewBindingActivity")
 inline fun <Binding : ViewBinding> ComponentActivity.viewBinding(
     noinline onViewDestroyed: (Binding) -> Unit = {},
     crossinline vbFactory: (View) -> Binding,
     @IdRes viewBindingRootId: Int
-): ViewBindingProperty<ComponentActivity, Binding> {
-    return viewBinding(onViewDestroyed) { activity ->
-        vbFactory(activity.requireViewByIdCompat(viewBindingRootId))
-    }
+): ViewBindingProperty<ComponentActivity, Binding> = viewBinding(
+    onViewDestroyed
+) { activity ->
+    vbFactory(activity.requireViewByIdCompat(viewBindingRootId))
 }
 
 @RestrictTo(LIBRARY_GROUP)
@@ -112,6 +120,8 @@ fun <A : ComponentActivity, Binding : ViewBinding> activityViewBinding(
     onViewDestroyed: (Binding) -> Unit,
     viewNeedsInitialization: Boolean = true,
     viewBinder: (A) -> Binding
-): ViewBindingProperty<A, Binding> {
-    return ActivityViewBindingProperty(onViewDestroyed, viewNeedsInitialization, viewBinder)
-}
+): ViewBindingProperty<A, Binding> = ActivityViewBindingProperty(
+    onViewDestroyed,
+    viewNeedsInitialization,
+    viewBinder
+)

@@ -3,16 +3,16 @@ package com.brave.viewbindingdelegate
 import androidx.viewbinding.ViewBinding
 
 /**
- * Method that will be used to create [ViewBinding].
+ * [ViewBinding]的创建方式
  */
 enum class CreateMethod {
     /**
-     * Use `ViewBinding.bind(View)`
+     * 使用`ViewBinding.bind(View)`
      */
     BIND,
 
     /**
-     * Use `ViewBinding.inflate(LayoutInflater, ViewGroup, boolean)`
+     * 使用`ViewBinding.inflate(LayoutInflater, ViewGroup, boolean)`
      */
     INFLATE
 }

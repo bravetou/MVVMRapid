@@ -1,7 +1,6 @@
 package com.brave.mvvm.example.ui.fragment
 
 import android.os.Bundle
-import com.blankj.utilcode.util.ToastUtils
 import com.brave.mvvm.example.App
 import com.brave.mvvm.example.BR
 import com.brave.mvvm.example.databinding.FragmentHomeBinding
@@ -16,7 +15,7 @@ import com.brave.mvvmrapid.core.common.ext.CommonViewBindingFragment
  *
  * ***desc***       ：Home Fragment
  */
-class HomeFragment : CommonViewBindingFragment<FragmentHomeBinding>() {
+class HomeFragment : BaseFragment() {
     companion object {
         const val TAG = "HomeFragment"
     }
@@ -36,14 +35,22 @@ class HomeFragment : CommonViewBindingFragment<FragmentHomeBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding.tvHello.setOnClickListener {
-            val text = when (++count % 3) {
-                0 -> "hello world! => 0"
-                1 -> "hello world! => 1"
-                2 -> "hello world! => 2"
-                else -> "hello world! => 意外"
+            //    val text = when (++count % 3) {
+            //        0 -> "hello world! => 0"
+            //        1 -> "hello world! => 1"
+            //        2 -> "hello world! => 2"
+            //        else -> "hello world! => 意外"
+            //    }
+            //    viewModel.helloWorld.value = text
+            //    ToastUtils.showLong(text)
+            try {
+                binding2.tvHello.text = "hello world! => ${++count}"
+            } catch (e: Throwable) {
+                e.printStackTrace()
             }
-            viewModel.helloWorld.value = text
-            ToastUtils.showLong(text)
         }
     }
 }
+
+abstract class BaseFragment : BaseFragment1<FragmentHomeBinding>()
+abstract class BaseFragment1<T : FragmentHomeBinding> : CommonViewBindingFragment<T>()

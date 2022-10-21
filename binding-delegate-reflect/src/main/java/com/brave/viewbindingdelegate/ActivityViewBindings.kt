@@ -10,10 +10,10 @@ import androidx.core.app.ActivityCompat
 import androidx.viewbinding.ViewBinding
 
 /**
- * 创建与[Activity][ComponentActivity]相关联的新[ViewBinding]
- *
+ * 创建一个与[活动][ComponentActivity]关联的[ViewBinding]
+ * @param onViewDestroyed 视图销毁回调函数
+ * @param viewBindingRootId [View] ID
  * @param Binding 期望的[ViewBinding]结果类
- * @param viewBindingRootId 根视图的id，它将用作视图绑定的
  */
 @JvmName("viewBindingActivity")
 inline fun <reified Binding : ViewBinding> ComponentActivity.viewBinding(
@@ -26,10 +26,10 @@ inline fun <reified Binding : ViewBinding> ComponentActivity.viewBinding(
 )
 
 /**
- * 创建与[Activity][ComponentActivity]相关联的新[ViewBinding]
- *
+ * 创建一个与[活动][ComponentActivity]关联的[ViewBinding]
+ * @param onViewDestroyed 视图销毁回调函数
+ * @param viewBindingRootId [View] ID
  * @param viewBindingClass 期望的[ViewBinding]结果类
- * @param viewBindingRootId 根视图的id，它将用作视图绑定的
  */
 @JvmName("viewBindingActivity")
 fun <Binding : ViewBinding> ComponentActivity.viewBinding(
@@ -49,10 +49,10 @@ fun <Binding : ViewBinding> ComponentActivity.viewBinding(
 }
 
 /**
- * 创建与[Activity][ComponentActivity]相关联的新[ViewBinding]
- *
+ * 创建一个与[活动][ComponentActivity]关联的[ViewBinding]
+ * @param onViewDestroyed 视图销毁回调函数
  * @param viewBindingClass 期望的[ViewBinding]结果类
- * @param rootViewProvider 来自[ViewBinding]的[Activity][this]的根视图的提供者
+ * @param rootViewProvider [View]提供者
  */
 @JvmName("viewBindingActivity")
 fun <Binding : ViewBinding> ComponentActivity.viewBinding(
@@ -68,9 +68,9 @@ fun <Binding : ViewBinding> ComponentActivity.viewBinding(
 }
 
 /**
- * 创建与[Activity][ComponentActivity]相关联的新[ViewBinding]。
- * 你需要设置[ViewBinding.getRoot]作为使用[Activity.setContentView]的内容视图。
- *
+ * 创建一个与[活动][ComponentActivity]关联的[ViewBinding]，
+ * 需要设置[root][ViewBinding.getRoot]作为[setContentView][Activity.setContentView]的内容视图。
+ * @param onViewDestroyed 视图销毁回调函数
  * @param Binding 期望的[ViewBinding]结果类
  */
 @JvmName("inflateViewBindingActivity")
@@ -83,6 +83,13 @@ inline fun <reified Binding : ViewBinding> ComponentActivity.viewBinding(
     onViewDestroyed
 )
 
+/**
+ * 创建一个与[活动][ComponentActivity]关联的[ViewBinding]，
+ * 需要设置[root][ViewBinding.getRoot]作为[setContentView][Activity.setContentView]的内容视图。
+ * @param onViewDestroyed 视图销毁回调函数
+ * @param viewBindingClass 期望的[ViewBinding]结果类
+ * @param Binding 期望的[ViewBinding]结果类
+ */
 @JvmName("inflateViewBindingActivity")
 fun <Binding : ViewBinding> ComponentActivity.viewBinding(
     viewBindingClass: Class<Binding>,

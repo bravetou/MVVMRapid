@@ -9,11 +9,10 @@ import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.viewbinding.ViewBinding
 
 /**
- * 创建与[ViewGroup]关联的新[ViewBinding]
- *
+ * 创建一个与[ViewGroup][ViewGroup]关联的[ViewBinding]
+ * @param onViewDestroyed 视图销毁回调函数
  * @param Binding 期望的[ViewBinding]结果类
- * @param createMethod 创建[ViewBinding]的方法
- * @param lifecycleAware 使用[ViewTreeLifecycleOwner]从[ViewGroup][this]中获取[LifecycleOwner]
+ * @param lifecycleAware 使用[ViewTreeLifecycleOwner]从[ViewGroup][ViewGroup]中获取[LifecycleOwner]
  */
 @JvmName("viewBindingFragment")
 inline fun <reified Binding : ViewBinding> ViewGroup.viewBinding(
@@ -28,11 +27,11 @@ inline fun <reified Binding : ViewBinding> ViewGroup.viewBinding(
 )
 
 /**
- * 创建与[ViewGroup]关联的新[ViewBinding]
- *
+ * 创建一个与[ViewGroup][ViewGroup]关联的[ViewBinding]
+ * @param onViewDestroyed 视图销毁回调函数
  * @param viewBindingClass 期望的[ViewBinding]结果类
- * @param createMethod 创建[ViewBinding]的方法
- * @param lifecycleAware 使用[ViewTreeLifecycleOwner]从[ViewGroup][this]中获取[LifecycleOwner]
+ * @param Binding 期望的[ViewBinding]结果类
+ * @param lifecycleAware 使用[ViewTreeLifecycleOwner]从[ViewGroup][ViewGroup]中获取[LifecycleOwner]
  */
 @JvmName("viewBindingFragment")
 @JvmOverloads
@@ -59,9 +58,10 @@ fun <Binding : ViewBinding> ViewGroup.viewBinding(
 }
 
 /**
- * 用[ViewGroup][this]作为父元素膨胀新的[ViewBinding]
- *
- * @param lifecycleAware 使用[ViewTreeLifecycleOwner]从[ViewGroup][this]中获取[LifecycleOwner]
+ * 创建一个与[ViewGroup][ViewGroup]关联的[ViewBinding]
+ * @param onViewDestroyed 视图销毁回调函数
+ * @param Binding 期望的[ViewBinding]结果类
+ * @param lifecycleAware 使用[ViewTreeLifecycleOwner]从[ViewGroup][ViewGroup]中获取[LifecycleOwner]
  */
 @JvmName("viewBindingFragment")
 @JvmOverloads
@@ -77,9 +77,11 @@ inline fun <reified Binding : ViewBinding> ViewGroup.viewBinding(
 )
 
 /**
- * 用[ViewGroup][this]作为父元素膨胀新的[ViewBinding]
- *
- * @param lifecycleAware 使用[ViewTreeLifecycleOwner]从[ViewGroup][this]中获取[LifecycleOwner]
+ * 创建一个与[ViewGroup][ViewGroup]关联的[ViewBinding]
+ * @param onViewDestroyed 视图销毁回调函数
+ * @param viewBindingClass 期望的[ViewBinding]结果类
+ * @param Binding 期望的[ViewBinding]结果类
+ * @param lifecycleAware 使用[ViewTreeLifecycleOwner]从[ViewGroup][ViewGroup]中获取[LifecycleOwner]
  */
 @JvmName("viewBindingFragment")
 @JvmOverloads

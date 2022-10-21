@@ -12,7 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.brave.mvvmrapid.core.CommonConfig
+import com.brave.mvvmrapid.utils.GenericsHelper
 import com.brave.mvvmrapid.utils.inflate
+import com.brave.viewbindingdelegate.viewBinding
 import java.lang.reflect.ParameterizedType
 
 /**
@@ -57,6 +59,14 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
             "The [binding] method cannot be empty. You can either use the [Binding] generic parameter or re-implement the [binding] method"
         )
     }
+
+    val binding2 by viewBinding(viewBinder = {
+        GenericsHelper(it.javaClass).classes
+            .filterIsInstance<Class<Binding>>()
+            .elementAtOrNull(0)
+            ?.inflate<Binding>(layoutInflater)
+            ?: error("Generic <Binding> not found")
+    })
 
     // viewModel
     private var _viewModel: VM? = null

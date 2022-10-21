@@ -1,4 +1,4 @@
-@file:Suppress("FunctionName", "UNCHECKED_CAST")
+@file:Suppress("FunctionName", "UNCHECKED_CAST", "unused")
 
 package com.brave.viewbindingdelegate
 
@@ -44,7 +44,7 @@ object ViewBindingCache {
 }
 
 /**
- * Wrapper of ViewBinding.inflate(LayoutInflater, ViewGroup, Boolean)
+ * `ViewBinding.inflate(LayoutInflater, ViewGroup, Boolean)`的包装类
  */
 @RestrictTo(LIBRARY)
 internal abstract class InflateViewBinding<out Binding : ViewBinding>(
@@ -114,7 +114,7 @@ internal class MergeInflateViewBinding<out Binding : ViewBinding>(
 }
 
 /**
- * Wrapper of ViewBinding.bind(View)
+ * `ViewBinding.bind(View)`的包装类
  */
 @RestrictTo(LIBRARY)
 internal class BindViewBinding<out VB : ViewBinding>(

@@ -85,12 +85,10 @@ private class FragmentViewBindingProperty<in F : Fragment, out Binding : ViewBin
         fragmentLifecycleCallbacks = null
     }
 
-    override fun getLifecycleOwner(thisRef: F): LifecycleOwner {
-        try {
-            return thisRef.viewLifecycleOwner
-        } catch (ignored: IllegalStateException) {
-            error("Fragment doesn't have a view associated with it or the view has been destroyed")
-        }
+    override fun getLifecycleOwner(thisRef: F): LifecycleOwner = try {
+        thisRef.viewLifecycleOwner
+    } catch (ignored: IllegalStateException) {
+        error("Fragment doesn't have a view associated with it or the view has been destroyed")
     }
 
     private inner class ClearOnDestroy(
@@ -108,95 +106,114 @@ private class FragmentViewBindingProperty<in F : Fragment, out Binding : ViewBin
 }
 
 /**
- * 创建与[Fragment]相关联的新[ViewBinding]
+ * 创建一个与[Fragment]关联的[ViewBinding]
+ * @param viewBinder 视图绑定函数
  */
 @JvmName("viewBindingFragment")
 fun <F : Fragment, Binding : ViewBinding> Fragment.viewBinding(
     viewBinder: (F) -> Binding,
-): ViewBindingProperty<F, Binding> {
-    return viewBinding(viewBinder, emptyVbCallback())
-}
+): ViewBindingProperty<F, Binding> = viewBinding(
+    viewBinder,
+    emptyVbCallback()
+)
 
 /**
- * 创建与[Fragment]相关联的新[ViewBinding]
+ * 创建一个与[Fragment]关联的[ViewBinding]
+ * @param viewBinder 视图绑定函数
+ * @param onViewDestroyed 视图销毁回调函数
  */
 @JvmName("viewBindingFragmentWithCallbacks")
 fun <F : Fragment, Binding : ViewBinding> Fragment.viewBinding(
     viewBinder: (F) -> Binding,
     onViewDestroyed: (Binding) -> Unit = {},
-): ViewBindingProperty<F, Binding> {
-    return when (this) {
-        is DialogFragment -> dialogFragmentViewBinding(onViewDestroyed, viewBinder)
-        else -> fragmentViewBinding(onViewDestroyed, viewBinder)
-    }
+): ViewBindingProperty<F, Binding> = when (this) {
+    is DialogFragment -> dialogFragmentViewBinding(
+        onViewDestroyed,
+        viewBinder
+    )
+    else -> fragmentViewBinding(
+        onViewDestroyed,
+        viewBinder
+    )
 }
 
 /**
- * 创建与[Fragment]相关联的新[ViewBinding]
- *
- * @param vbFactory 创建[ViewBinding]的新实例的函数。可以使用***MyViewBinding::bind***
- * @param viewProvider 从片段中提供一个[View]。默认情况下调用[Fragment.requireView]
+ * 创建一个与[Fragment]关联的[ViewBinding]
+ * @param vbFactory 创建[ViewBinding]的函数。可以直接使用*MyViewBinding::bind*
+ * @param viewProvider [View]提供者。此处默认使用[Fragment][Fragment]中的根[View][Fragment.getView]
  */
 @JvmName("viewBindingFragment")
 inline fun <F : Fragment, Binding : ViewBinding> Fragment.viewBinding(
     crossinline vbFactory: (View) -> Binding,
     crossinline viewProvider: (F) -> View = Fragment::requireView,
-): ViewBindingProperty<F, Binding> {
-    return viewBinding(vbFactory, viewProvider, emptyVbCallback())
-}
+): ViewBindingProperty<F, Binding> = viewBinding(
+    vbFactory,
+    viewProvider,
+    emptyVbCallback()
+)
 
 /**
- * 创建与[Fragment]相关联的新[ViewBinding]
- *
- * @param vbFactory 创建[ViewBinding]的新实例的函数。可以使用***MyViewBinding::bind***
- * @param viewProvider 从片段中提供一个[View]。默认情况下调用[Fragment.requireView]
+ * 创建一个与[Fragment]关联的[ViewBinding]
+ * @param vbFactory 创建[ViewBinding]的函数。可以直接使用*MyViewBinding::bind*
+ * @param viewProvider [View]提供者。此处默认使用[Fragment][Fragment]中的根[View][Fragment.getView]
+ * @param onViewDestroyed 视图销毁回调函数
  */
 @JvmName("viewBindingFragmentWithCallbacks")
 inline fun <F : Fragment, Binding : ViewBinding> Fragment.viewBinding(
     crossinline vbFactory: (View) -> Binding,
     crossinline viewProvider: (F) -> View = Fragment::requireView,
     noinline onViewDestroyed: (Binding) -> Unit = {},
-): ViewBindingProperty<F, Binding> {
-    return viewBinding({ fragment: F -> vbFactory(viewProvider(fragment)) }, onViewDestroyed)
-}
+): ViewBindingProperty<F, Binding> = viewBinding(
+    { fragment: F ->
+        vbFactory(viewProvider(fragment))
+    },
+    onViewDestroyed
+)
 
 /**
- * 创建与[Fragment]相关联的新[ViewBinding]
- *
- * @param vbFactory 创建[ViewBinding]的新实例的函数。可以使用***MyViewBinding::bind***
- * @param viewBindingRootId 根视图的id，它将用作视图绑定的根
+ * 创建一个与[Fragment]关联的[ViewBinding]
+ * @param vbFactory 创建[ViewBinding]的函数。可以直接使用*MyViewBinding::bind*
+ * @param viewBindingRootId [View] ID
  */
 @JvmName("viewBindingFragment")
 inline fun <F : Fragment, Binding : ViewBinding> Fragment.viewBinding(
     crossinline vbFactory: (View) -> Binding,
     @IdRes viewBindingRootId: Int,
-): ViewBindingProperty<F, Binding> {
-    return viewBinding(vbFactory, viewBindingRootId, emptyVbCallback())
-}
+): ViewBindingProperty<F, Binding> = viewBinding(
+    vbFactory,
+    viewBindingRootId,
+    emptyVbCallback()
+)
 
 /**
- * 创建与[Fragment]相关联的新[ViewBinding]
- *
- * @param vbFactory 创建[ViewBinding]的新实例的函数。可以使用***MyViewBinding::bind***
- * @param viewBindingRootId 根视图的id，它将用作视图绑定的根
+ * 创建一个与[Fragment]关联的[ViewBinding]
+ * @param vbFactory 创建[ViewBinding]的函数。可以直接使用*MyViewBinding::bind*
+ * @param viewBindingRootId [View] ID
+ * @param onViewDestroyed 视图销毁回调函数
  */
 @JvmName("viewBindingFragmentWithCallbacks")
 inline fun <F : Fragment, Binding : ViewBinding> Fragment.viewBinding(
     crossinline vbFactory: (View) -> Binding,
     @IdRes viewBindingRootId: Int,
     noinline onViewDestroyed: (Binding) -> Unit,
-): ViewBindingProperty<F, Binding> {
-    return when (this) {
-        is DialogFragment -> {
-            viewBinding<DialogFragment, Binding>(vbFactory, { fragment ->
+): ViewBindingProperty<F, Binding> = when (this) {
+    is DialogFragment -> {
+        viewBinding<DialogFragment, Binding>(
+            vbFactory,
+            { fragment ->
                 fragment.getRootView(viewBindingRootId)
-            }, onViewDestroyed) as ViewBindingProperty<F, Binding>
-        }
-        else -> {
-            viewBinding(vbFactory, { fragment: F ->
+            },
+            onViewDestroyed
+        ) as ViewBindingProperty<F, Binding>
+    }
+    else -> {
+        viewBinding(
+            vbFactory,
+            { fragment: F ->
                 fragment.requireView().requireViewByIdCompat(viewBindingRootId)
-            }, onViewDestroyed)
-        }
+            },
+            onViewDestroyed
+        )
     }
 }
 
@@ -205,19 +222,19 @@ fun <F : Fragment, Binding : ViewBinding> fragmentViewBinding(
     onViewDestroyed: (Binding) -> Unit,
     viewBinder: (F) -> Binding,
     viewNeedsInitialization: Boolean = true
-): ViewBindingProperty<F, Binding> {
-    return FragmentViewBindingProperty(viewNeedsInitialization, viewBinder, onViewDestroyed)
-}
+): ViewBindingProperty<F, Binding> = FragmentViewBindingProperty(
+    viewNeedsInitialization,
+    viewBinder,
+    onViewDestroyed
+)
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 fun <F : Fragment, Binding : ViewBinding> dialogFragmentViewBinding(
     onViewDestroyed: (Binding) -> Unit,
     viewBinder: (F) -> Binding,
     viewNeedsInitialization: Boolean = true
-): ViewBindingProperty<F, Binding> {
-    return DialogFragmentViewBindingProperty(
-        viewNeedsInitialization,
-        viewBinder,
-        onViewDestroyed
-    ) as ViewBindingProperty<F, Binding>
-}
+): ViewBindingProperty<F, Binding> = DialogFragmentViewBindingProperty(
+    viewNeedsInitialization,
+    viewBinder,
+    onViewDestroyed
+) as ViewBindingProperty<F, Binding>
