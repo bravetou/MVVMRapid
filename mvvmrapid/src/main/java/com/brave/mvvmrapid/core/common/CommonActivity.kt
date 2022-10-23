@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.brave.mvvmrapid.utils.GenericsHelper
-import com.brave.mvvmrapid.utils.inflate
+import com.brave.viewbindingdelegate.CreateMethod
 import com.brave.viewbindingdelegate.viewBinding
 
 /**
@@ -29,17 +29,13 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
 
     private val allGenerics by lazy { GenericsHelper(javaClass).classes }
 
-    open val binding: Binding by viewBinding(viewBinder = {
-        initViewBinding() ?: allGenerics
-            .filterIsInstance<Class<Binding>>()
-            .find { ViewBinding::class.java.isAssignableFrom(it) }
-            ?.inflate(layoutInflater)
-        ?: error("Generic <Binding> not found")
-    }, onViewDestroyed = {
-        if (it is ViewDataBinding) it.unbind()
-    })
-
-    open fun initViewBinding(): Binding? = null
+    open val binding: Binding by viewBinding(viewBindingClass = allGenerics
+        .filterIsInstance<Class<Binding>>()
+        .find { ViewBinding::class.java.isAssignableFrom(it) }
+        ?: error("Generic <Binding> not found"),
+        createMethod = CreateMethod.INFLATE, onViewDestroyed = {
+            if (it is ViewDataBinding) it.unbind()
+        })
 
     open val viewModel: VM by lazy {
         initViewModel() ?: allGenerics
@@ -70,17 +66,18 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     }
 
     private fun initBinding() {
-        // 设置布局
-        setContentView(binding.root)
-        // [ViewDataBinding]
-        if (binding is ViewDataBinding) {
-            val dataBinding = binding as ViewDataBinding
-            // 关联ViewModel
-            dataBinding.setVariable(variableId, viewModel)
-            // 支持LiveData绑定xml，数据改变，UI自动会更新
-            dataBinding.lifecycleOwner = this
-            // 让ViewModel拥有View的生命周期感应
-            lifecycle.addObserver(viewModel)
+        binding.let { binding ->
+            // 设置布局
+            setContentView(binding.root)
+            // [ViewDataBinding]
+            if (binding is ViewDataBinding) {
+                // 关联ViewModel
+                binding.setVariable(variableId, viewModel)
+                // 支持LiveData绑定xml，数据改变，UI自动会更新
+                binding.lifecycleOwner = this
+                // 让ViewModel拥有View的生命周期感应
+                lifecycle.addObserver(viewModel)
+            }
         }
     }
 
@@ -98,9 +95,10 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
      * 刷新布局
      */
     open fun refreshLayout() {
-        if (binding is ViewDataBinding) {
-            val dataBinding = binding as ViewDataBinding
-            dataBinding.setVariable(variableId, viewModel)
+        binding.let { binding ->
+            if (binding is ViewDataBinding) {
+                binding.setVariable(variableId, viewModel)
+            }
         }
     }
 
@@ -131,12 +129,11 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
 
     /**
      * 跳转页面
-     * @param clz 所跳转的目的Activity类
      * @param bundle 参数
      */
     @JvmOverloads
-    open fun <AC : Activity> startActivity(clz: Class<in AC>, bundle: Bundle? = null) {
-        val intent = Intent(this, clz)
+    inline fun <reified AC : Activity> AC.startActivity(bundle: Bundle? = null) {
+        val intent = Intent(this, AC::class.java)
         bundle?.let { data -> intent.putExtras(data) }
         startActivity(intent)
     }
@@ -149,7 +146,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
      * @return T 参数类型
      */
     @JvmOverloads
-    open fun <T : Any> getParam(key: String, default: T? = null): T? {
+    fun <T : Any> getParam(key: String, default: T? = null): T? {
         val bundle = intent?.extras ?: return null
         return (bundle.get(key) as? T?) ?: default
     }

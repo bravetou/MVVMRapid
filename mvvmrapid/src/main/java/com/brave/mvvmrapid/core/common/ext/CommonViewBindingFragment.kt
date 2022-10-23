@@ -24,7 +24,7 @@ abstract class CommonViewBindingFragment<Binding : ViewBinding> :
     override val variableId: Int
         get() = BR._all
 
-    override val viewModel by lazy {
-        ViewModelProvider(this)[viewModelKey, CommonViewModel::class.java]
+    override fun initViewModel(): CommonViewModel {
+        return ViewModelProvider(this)[viewModelKey, CommonViewModel::class.java]
     }
 }
