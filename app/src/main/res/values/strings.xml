@@ -3,4 +3,11 @@
     <string name="str_please_enter_amount">请输入金额</string>
     <string name="str_coroutine_exception_interception">协程异常拦截</string>
     <string name="str_coroutine_scheduler">协程调度器</string>
+
+    <string name="str_show_no_reflection_fragments">显示无反射Fragment</string>
+    <string name="str_remove_no_reflection_fragments">移除无反射Fragment</string>
+    <string name="str_show_reflection_inflate_method_fragment">显示反射inflate方法Fragment</string>
+    <string name="str_remove_reflection_inflate_method_fragment">移除反射inflate方法Fragment</string>
+    <string name="str_show_reflection_bind_method_fragment">显示反射bind方法Fragment</string>
+    <string name="str_remove_reflection_bind_method_fragment">移除反射bind方法Fragment</string>
 </resources>

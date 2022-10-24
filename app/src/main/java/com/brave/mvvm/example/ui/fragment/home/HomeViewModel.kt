@@ -1,4 +1,4 @@
-package com.brave.mvvm.example.ui.fragment
+package com.brave.mvvm.example.ui.fragment.home
 
 import android.app.Application
 import android.view.View

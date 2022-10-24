@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.brave.mvvmrapid.utils.GenericsHelper
 import com.brave.mvvmrapid.utils.inflate
-import com.brave.viewbindingdelegate.viewBinding
+import com.brave.viewbindingdelegate.activityViewBinding
 
 /**
  * ***author***     ：brave tou
@@ -29,14 +29,14 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
 
     private val allGenerics by lazy { GenericsHelper(javaClass).classes }
 
-    open val binding: Binding by viewBinding(onViewDestroyed = {
+    open val binding: Binding by activityViewBinding(onViewDestroyed = {
         if (it is ViewDataBinding) it.unbind()
     }, viewBinder = { _ ->
         initViewBinding() ?: allGenerics.filterIsInstance<Class<Binding>>()
             .find { ViewBinding::class.java.isAssignableFrom(it) }
             ?.inflate(layoutInflater)
         ?: error("Generic <Binding> not found")
-    })
+    }, viewNeedsInitialization = false)
 
     open fun initViewBinding(): Binding? = null
 
@@ -135,7 +135,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
      * @param bundle 参数
      */
     @JvmOverloads
-    inline fun <reified AC : Activity> AC.startActivity(bundle: Bundle? = null) {
+    inline fun <reified AC : Activity> startActivity(bundle: Bundle? = null) {
         val intent = Intent(this, AC::class.java)
         bundle?.let { data -> intent.putExtras(data) }
         startActivity(intent)

@@ -57,6 +57,7 @@ dependencies {
     implementation rootProject.ext.dependencies.multidex
     implementation rootProject.ext.dependencies.utilcodex
     implementation rootProject.ext.dependencies.baseRecyclerViewAdapterHelper
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     testImplementation rootProject.ext.dependencies.junit
     androidTestImplementation rootProject.ext.dependencies.androidxJunit

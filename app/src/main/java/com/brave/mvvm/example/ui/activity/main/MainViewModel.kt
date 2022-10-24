@@ -1,9 +1,7 @@
-package com.brave.mvvm.example.ui.activity
+package com.brave.mvvm.example.ui.activity.main
 
 import android.app.Application
 import android.util.Log
-import android.view.View
-import androidx.lifecycle.MutableLiveData
 import com.brave.mvvmrapid.core.common.CommonViewModel
 import com.brave.mvvmrapid.utils.launchScope
 import kotlinx.coroutines.*
@@ -19,9 +17,6 @@ import kotlin.random.Random
  * ***desc***       ：Main ViewModel
  */
 class MainViewModel(application: Application) : CommonViewModel(application) {
-    val helloWorld = MutableLiveData("hello world!")
-    val helloVisibility = MutableLiveData(View.VISIBLE)
-
     fun testScope() {
         launch(true, {
             supervisorScope {

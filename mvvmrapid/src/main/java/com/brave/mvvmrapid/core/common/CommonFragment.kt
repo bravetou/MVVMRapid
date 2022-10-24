@@ -136,7 +136,7 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
      * @param bundle 参数
      */
     @JvmOverloads
-    inline fun <reified AC : Activity> AC.startActivity(bundle: Bundle? = null) {
+    inline fun <reified AC : Activity> startActivity(bundle: Bundle? = null) {
         val activity = activity ?: return
         val intent = Intent(activity, AC::class.java)
         bundle?.let { data -> intent.putExtras(data) }
