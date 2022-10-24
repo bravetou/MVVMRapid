@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.brave.mvvmrapid.utils.GenericsHelper
-import com.brave.viewbindingdelegate.CreateMethod
+import com.brave.mvvmrapid.utils.inflate
 import com.brave.viewbindingdelegate.viewBinding
 
 /**
@@ -29,13 +29,16 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
 
     private val allGenerics by lazy { GenericsHelper(javaClass).classes }
 
-    open val binding: Binding by viewBinding(viewBindingClass = allGenerics
-        .filterIsInstance<Class<Binding>>()
-        .find { ViewBinding::class.java.isAssignableFrom(it) }
-        ?: error("Generic <Binding> not found"),
-        createMethod = CreateMethod.INFLATE, onViewDestroyed = {
-            if (it is ViewDataBinding) it.unbind()
-        })
+    open val binding: Binding by viewBinding(onViewDestroyed = {
+        if (it is ViewDataBinding) it.unbind()
+    }, viewBinder = { _ ->
+        initViewBinding() ?: allGenerics.filterIsInstance<Class<Binding>>()
+            .find { ViewBinding::class.java.isAssignableFrom(it) }
+            ?.inflate(layoutInflater)
+        ?: error("Generic <Binding> not found")
+    })
+
+    open fun initViewBinding(): Binding? = null
 
     open val viewModel: VM by lazy {
         initViewModel() ?: allGenerics

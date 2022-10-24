@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
 import androidx.viewbinding.ViewBinding
+import com.brave.mvvmrapid.utils.GenericsHelper
 import com.brave.mvvmrapid.utils.inflate
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
-import java.lang.reflect.ParameterizedType
 
 /**
  * ***author***     ：brave tou
@@ -25,17 +25,15 @@ abstract class BaseBindingQuickAdapter<T, Binding : ViewBinding> @JvmOverloads c
     data: MutableList<T>? = null
 ) : BaseQuickAdapter<T, BaseViewHolder>(layoutResId, data) {
     override fun onCreateDefViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
-        val type = javaClass.genericSuperclass
-        if (type is ParameterizedType) {
-            type.actualTypeArguments.filterNotNull()
-                .filterIsInstance<Class<*>>()
-                .find { ViewBinding::class.java.isAssignableFrom(it) }
-                ?.inflate<Binding>(LayoutInflater.from(parent.context), parent, false)
-                ?.also { return BaseBindingViewHolder(it) }
-        }
+        GenericsHelper(javaClass).classes
+            .filterIsInstance<Class<Binding>>()
+            .find { ViewBinding::class.java.isAssignableFrom(it) }
+            ?.inflate<Binding>(LayoutInflater.from(parent.context), parent, false)
+            ?.also { return BaseBindingViewHolder(it) }
         return super.onCreateDefViewHolder(parent, viewType)
     }
 
+    @Deprecated(message = "Please use the [convert(binding, item)]")
     override fun convert(holder: BaseViewHolder, item: T) {
         if (holder is BaseBindingViewHolder<*>) {
             convert(holder.binding as Binding, item)
@@ -45,6 +43,7 @@ abstract class BaseBindingQuickAdapter<T, Binding : ViewBinding> @JvmOverloads c
         }
     }
 
+    @Deprecated(message = "Please use the [convert(binding, item, payloads)]")
     override fun convert(holder: BaseViewHolder, item: T, payloads: List<Any>) {
         if (holder is BaseBindingViewHolder<*>) {
             convert(holder.binding as Binding, item, payloads)

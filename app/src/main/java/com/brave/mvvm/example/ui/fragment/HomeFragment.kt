@@ -16,7 +16,7 @@ import com.brave.mvvmrapid.core.common.ext.CommonViewBindingFragment
  *
  * ***desc***       ：Home Fragment
  */
-class HomeFragment : CommonViewBindingFragment<FragmentHomeBinding>() {
+class HomeFragment : TransferFragment() {
     companion object {
         const val TAG = "HomeFragment"
     }
@@ -42,3 +42,6 @@ class HomeFragment : CommonViewBindingFragment<FragmentHomeBinding>() {
         }
     }
 }
+
+abstract class TransferFragment :
+    CommonViewBindingFragment<FragmentHomeBinding>()

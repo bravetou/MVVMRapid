@@ -10,11 +10,10 @@ import com.brave.mvvm.example.BR
 import com.brave.mvvm.example.R
 import com.brave.mvvm.example.bean.FunctionBean
 import com.brave.mvvm.example.databinding.ActivityMainBinding
-import com.brave.mvvm.example.databinding.ActivityMainBindingImpl
 import com.brave.mvvm.example.ui.adapter.FunctionAdapter
 import com.brave.mvvm.example.ui.fragment.HomeFragment
 import com.brave.mvvmrapid.core.common.CommonActivity
-import com.brave.mvvmrapid.core.common.ext.CommonDataBindingActivity
+import com.brave.mvvmrapid.core.common.CommonViewModel
 import com.brave.mvvmrapid.core.filter.MoneyInputFilter
 import com.brave.mvvmrapid.utils.drawBackground
 
@@ -27,7 +26,7 @@ import com.brave.mvvmrapid.utils.drawBackground
  *
  * ***desc***       ：Main View
  */
-class MainActivity : TransferActivity<ActivityMainBinding>() {
+class MainActivity : TransferCopyActivity<MainViewModel>() {
     override val variableId = BR.viewModel
 
     private var count = 0
@@ -102,4 +101,8 @@ class MainActivity : TransferActivity<ActivityMainBinding>() {
     }
 }
 
-abstract class TransferActivity<Binding : ViewBinding> : CommonActivity<Binding, MainViewModel>()
+abstract class TransferActivity<Binding : ViewBinding> :
+    CommonActivity<Binding, MainViewModel>()
+
+abstract class TransferCopyActivity<VM : CommonViewModel> :
+    CommonActivity<ActivityMainBinding, VM>()
