@@ -57,6 +57,10 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
         savedInstanceState: Bundle?,
     ): View = binding.root
 
+    protected val context by lazy {
+        requireActivity()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initStart()
