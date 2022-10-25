@@ -5,6 +5,12 @@ plugins {
     id 'kotlin-kapt'
 }
 
+ext {
+    groupId = 'com.brave.viewbindingdelegate'
+    artifactId = "binding-delegate-no-reflection"
+}
+apply from: rootProject.file('publishing.gradle')
+
 android {
     compileSdk rootProject.ext.compileSdkVersion
 
