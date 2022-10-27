@@ -7,5 +7,5 @@ import kotlinx.parcelize.Parcelize
 data class FunctionBean(
     val id: Int = -1,
     val imgRes: Int = -1,
-    val name: String = ""
+    var name: String = ""
 ) : Parcelable

@@ -14,4 +14,9 @@ object CommonConfig {
      * 开启[DEBUG]模式
      */
     var DEBUG: Boolean = false
+
+    /**
+     * 请求码{key}
+     */
+    const val REQUEST_CODE = "requestCode"
 }

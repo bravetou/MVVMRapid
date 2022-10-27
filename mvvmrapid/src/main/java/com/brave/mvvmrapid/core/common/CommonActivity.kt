@@ -4,11 +4,15 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
+import com.brave.mvvmrapid.core.CommonConfig
 import com.brave.mvvmrapid.utils.GenericsHelper
 import com.brave.mvvmrapid.utils.inflate
 import com.brave.viewbindingdelegate.activityViewBinding
@@ -152,5 +156,53 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     fun <T : Any> getParam(key: String, default: T? = null): T? {
         val bundle = intent?.extras ?: return null
         return (bundle.get(key) as? T?) ?: default
+    }
+
+    override fun onDestroy() {
+        // 销毁时取消所有回调函数的持有
+        callbacks.clear()
+        super.onDestroy()
+    }
+
+    private val callbacks = linkedMapOf<Int, (ActivityResult) -> Unit>()
+    private val register = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        callbacks.filter { (requestCode, _) ->
+            requestCode == result.data?.extras?.getInt(CommonConfig.REQUEST_CODE)
+        }.forEach {
+            it.value(result)
+        }
+    }
+
+    /**
+     * 该[方法][startActivityForResult]需与[finishForResult]联用
+     */
+    @JvmOverloads
+    fun <AC : Activity> startActivityForResult(
+        cls: Class<AC>,
+        bundle: Bundle = bundleOf(),
+        callback: (ActivityResult) -> Unit = {}
+    ) {
+        val requestCode = cls.hashCode()
+        callbacks[requestCode] = callback
+        register.launch(Intent(this, cls).let { intent ->
+            bundle.putInt(CommonConfig.REQUEST_CODE, requestCode)
+            intent.putExtras(bundle)
+        })
+    }
+
+    /**
+     * 该[方法][finishForResult]需与[startActivityForResult]联用
+     */
+    @JvmOverloads
+    fun finishForResult(resultCode: Int, data: Bundle = bundleOf()) {
+        val intent = Intent()
+        getParam(CommonConfig.REQUEST_CODE, -1)?.let { requestCode ->
+            data.putInt(CommonConfig.REQUEST_CODE, requestCode)
+        }
+        intent.putExtras(data)
+        setResult(resultCode, intent)
+        finish()
     }
 }

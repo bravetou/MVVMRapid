@@ -2,6 +2,7 @@ package com.brave.mvvm.example.ui.activity.delegate
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.StringUtils
 import com.brave.mvvm.example.BR
@@ -39,6 +40,15 @@ class DelegateActivity : CommonActivity<ActivityDelegateBinding, DelegateViewMod
             FunctionBean(0, R.mipmap.icon_dot, "no reflection"),
             FunctionBean(1, R.mipmap.icon_dot, "reflect `inflate`"),
             FunctionBean(2, R.mipmap.icon_dot, "reflect `bind`")
+        )
+    }
+
+    override fun onBackPressed() {
+        finishForResult(
+            RESULT_OK,
+            bundleOf(
+                "back" to "delegate finish!"
+            )
         )
     }
 

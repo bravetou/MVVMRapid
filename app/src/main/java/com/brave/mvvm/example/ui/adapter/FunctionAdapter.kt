@@ -22,4 +22,12 @@ class FunctionAdapter : BaseBindingQuickAdapter<FunctionBean, ItemFunctionLayout
             null
         )
     }
+
+    override fun convert(
+        binding: ItemFunctionLayoutBinding,
+        item: FunctionBean,
+        payloads: List<Any>
+    ) {
+        binding.tvFunction.text = item.name
+    }
 }

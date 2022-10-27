@@ -50,11 +50,13 @@ class MainActivity : TransferCopyActivity() {
             when (item.id) {
                 0 -> {
                     // delegate
-                    startActivity<DelegateActivity>(
-                        bundle = bundleOf(
-                            "from" to javaClass.simpleName
-                        )
-                    )
+                    startActivityForResult(
+                        DelegateActivity::class.java,
+                        bundleOf("from" to javaClass.simpleName)
+                    ) {
+                        item.name = "${it.data?.extras?.getString("back", "delegate")}"
+                        adapter.notifyItemChanged(position)
+                    }
                 }
                 1 -> {
                     // mvvmrapid
