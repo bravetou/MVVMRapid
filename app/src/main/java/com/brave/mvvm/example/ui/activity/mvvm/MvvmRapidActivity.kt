@@ -1,6 +1,7 @@
 package com.brave.mvvm.example.ui.activity.mvvm
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import com.brave.mvvm.example.BR
 import com.brave.mvvm.example.databinding.ActivityMvvmRapidBinding
 import com.brave.mvvm.example.ui.fragment.home.HomeFragment
@@ -23,5 +24,14 @@ class MvvmRapidActivity : CommonActivity<ActivityMvvmRapidBinding, MvvmRapidView
         supportFragmentManager.beginTransaction()
             .add(binding.fragment.id, HomeFragment(), HomeFragment.TAG)
             .commitNow()
+    }
+
+    override fun onBackPressed() {
+        finishForResult(
+            RESULT_OK,
+            bundleOf(
+                "back" to "mvvmrapid finish!"
+            )
+        )
     }
 }

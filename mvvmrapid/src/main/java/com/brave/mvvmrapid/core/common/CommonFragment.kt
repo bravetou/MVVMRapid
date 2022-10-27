@@ -178,11 +178,15 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
     }
 
     override fun onDestroyView() {
+        // 销毁时取消所有回调函数的持有
         callbacks.clear()
         super.onDestroyView()
     }
 
     private val callbacks = linkedMapOf<Int, (ActivityResult) -> Unit>()
+    private val mRequestCode by lazy {
+        getParam(CommonConfig.REQUEST_CODE, -1) ?: -1
+    }
     private val register = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -219,9 +223,7 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
     fun finishForResult(resultCode: Int, data: Bundle = bundleOf()) {
         activity?.apply {
             val intent = Intent()
-            getParam(CommonConfig.REQUEST_CODE, -1)?.let { requestCode ->
-                data.putInt(CommonConfig.REQUEST_CODE, requestCode)
-            }
+            data.putInt(CommonConfig.REQUEST_CODE, mRequestCode)
             intent.putExtras(data)
             setResult(resultCode, intent)
             finish()

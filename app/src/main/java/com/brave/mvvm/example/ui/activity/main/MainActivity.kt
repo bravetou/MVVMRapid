@@ -60,11 +60,13 @@ class MainActivity : TransferCopyActivity() {
                 }
                 1 -> {
                     // mvvmrapid
-                    startActivity<MvvmRapidActivity>(
-                        bundle = bundleOf(
-                            "from" to javaClass.simpleName
-                        )
-                    )
+                    startActivityForResult(
+                        MvvmRapidActivity::class.java,
+                        bundleOf("from" to javaClass.simpleName)
+                    ) {
+                        item.name = "${it.data?.extras?.getString("back", "mvvmrapid")}"
+                        adapter.notifyItemChanged(position)
+                    }
                 }
             }
         }
