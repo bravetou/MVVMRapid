@@ -2,6 +2,8 @@ package com.brave.mvvm.example.ui.activity.main
 
 import android.os.Bundle
 import android.text.InputFilter
+import android.util.Log
+import android.view.View
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
@@ -36,7 +38,8 @@ class MainActivity : TransferCopyActivity() {
     private val data by lazy {
         mutableListOf(
             FunctionBean(0, R.mipmap.icon_dot, "delegate"),
-            FunctionBean(1, R.mipmap.icon_dot, "mvvmrapid")
+            FunctionBean(1, R.mipmap.icon_dot, "mvvmrapid"),
+            FunctionBean(2, R.mipmap.icon_dot, "view")
         )
     }
 
@@ -68,6 +71,10 @@ class MainActivity : TransferCopyActivity() {
                         adapter.notifyItemChanged(position)
                     }
                 }
+                2 -> {
+                    // view
+                    checkViewLevel(binding.root)
+                }
             }
         }
 
@@ -82,6 +89,24 @@ class MainActivity : TransferCopyActivity() {
             MoneyInputFilter.newInstance(2),
             InputFilter.LengthFilter(11)
         )
+    }
+
+    private fun checkViewLevel(view: View, flag: Boolean = true) {
+        if (flag) {
+            Log.d(TAG, "checkViewLevel === === ===> start")
+        }
+        Log.d(TAG, "checkViewLevel === === ===> $view")
+        val parent = view.parent
+        if (parent is View) {
+            checkViewLevel(parent, false)
+        }
+        if (flag) {
+            Log.d(TAG, "checkViewLevel === === ===> end")
+        }
+    }
+
+    companion object {
+        private const val TAG = "MainActivity"
     }
 }
 
