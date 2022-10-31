@@ -47,7 +47,7 @@ android {
 dependencies {
     implementation project(path: ':mvvmrapid')
     implementation project(path: ':mvvmrapid-rv')
-    // implementation 'com.github.bravetou:MVVMRapid:1.0.2'
+    // implementation 'com.github.bravetou.MVVMRapid:mvvmrapid:1.0.6'
     implementation rootProject.ext.dependencies.coreKtx
     implementation rootProject.ext.dependencies.appcompat
     implementation rootProject.ext.dependencies.material
@@ -57,7 +57,7 @@ dependencies {
     implementation rootProject.ext.dependencies.multidex
     implementation rootProject.ext.dependencies.utilcodex
     implementation rootProject.ext.dependencies.baseRecyclerViewAdapterHelper
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation rootProject.ext.dependencies.constraintlayout
 
     testImplementation rootProject.ext.dependencies.junit
     androidTestImplementation rootProject.ext.dependencies.androidxJunit

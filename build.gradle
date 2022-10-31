@@ -26,6 +26,7 @@ ext {
     dependencies.fragmentKtx = 'androidx.fragment:fragment-ktx:1.5.4'
     dependencies.multidex = 'androidx.multidex:multidex:2.0.1'
     dependencies.utilcodex = 'com.blankj:utilcodex:1.31.1'
+    dependencies.constraintlayout = 'androidx.constraintlayout:constraintlayout:2.1.4'
     dependencies.recyclerview = 'androidx.recyclerview:recyclerview:1.2.1'
     dependencies.baseRecyclerViewAdapterHelper =
             'io.github.cymchad:BaseRecyclerViewAdapterHelper:3.0.9'
