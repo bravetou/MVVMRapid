@@ -32,8 +32,14 @@ MVVM rapid development.
 在主项目app的build.gradle中依赖
 ```groovy
 	dependencies {
-        // Tag uses the distribution you need    
-        implementation 'com.github.bravetou:MVVMRapid:Tag'
+        // mvvm core
+        implementation 'com.github.bravetou.MVVMRapid:mvvmrapid:1.0.6'
+        // mvvm recyclerView
+        implementation 'com.github.bravetou.MVVMRapid:mvvmrapid-rv:1.0.6'
+        // no reflection viewBinding delegate
+        implementation 'com.github.bravetou.MVVMRapid:binding-delegate-no-reflection:1.0.6'
+        // reflect viewBinding delegate
+        implementation 'com.github.bravetou.MVVMRapid:binding-delegate-reflect:1.0.6'
 	}
 ```
 
