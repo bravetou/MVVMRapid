@@ -10,10 +10,10 @@ MVVM rapid development.
 ---
 1. 启用databinding
 ```groovy
-    buildFeatures {
-        viewBinding true
-        dataBinding true
-    }
+buildFeatures {
+    viewBinding true
+    dataBinding true
+}
 ```
 
 ---
@@ -21,26 +21,26 @@ MVVM rapid development.
 
 在根目录的build.gradle中加入
 ```groovy
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
-	}
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
 ```
 
 在主项目app的build.gradle中依赖
 ```groovy
-	dependencies {
-        // mvvm core
-        implementation 'com.github.bravetou.MVVMRapid:mvvmrapid:1.0.6'
-        // mvvm recyclerView
-        implementation 'com.github.bravetou.MVVMRapid:mvvmrapid-rv:1.0.6'
-        // no reflection viewBinding delegate
-        implementation 'com.github.bravetou.MVVMRapid:binding-delegate-no-reflection:1.0.6'
-        // reflect viewBinding delegate
-        implementation 'com.github.bravetou.MVVMRapid:binding-delegate-reflect:1.0.6'
-	}
+dependencies {
+    // mvvm core
+    implementation 'com.github.bravetou.MVVMRapid:mvvmrapid:1.0.6'
+    // mvvm recyclerView
+    implementation 'com.github.bravetou.MVVMRapid:mvvmrapid-rv:1.0.6'
+    // no reflection viewBinding delegate
+    implementation 'com.github.bravetou.MVVMRapid:binding-delegate-no-reflection:1.0.6'
+    // reflect viewBinding delegate
+    implementation 'com.github.bravetou.MVVMRapid:binding-delegate-reflect:1.0.6'
+}
 ```
 
 ---
