@@ -11,19 +11,19 @@ task clean(type: Delete) {
 }
 
 ext {
-    compileSdkVersion = 32
+    compileSdkVersion = 33
     minSdkVersion = 16
-    targetSdkVersion = 32
+    targetSdkVersion = 33
     versionCode = 106
     versionName = "1.0.6"
 
     dependencies = [:]
 
-    dependencies.coreKtx = 'androidx.core:core-ktx:1.7.0'
-    dependencies.appcompat = 'androidx.appcompat:appcompat:1.4.0'
-    dependencies.material = 'com.google.android.material:material:1.4.0'
-    dependencies.activityKtx = 'androidx.activity:activity-ktx:1.5.1'
-    dependencies.fragmentKtx = 'androidx.fragment:fragment-ktx:1.5.1'
+    dependencies.coreKtx = 'androidx.core:core-ktx:1.9.0'
+    dependencies.appcompat = 'androidx.appcompat:appcompat:1.5.1'
+    dependencies.material = 'com.google.android.material:material:1.7.0'
+    dependencies.activityKtx = 'androidx.activity:activity-ktx:1.6.1'
+    dependencies.fragmentKtx = 'androidx.fragment:fragment-ktx:1.5.4'
     dependencies.multidex = 'androidx.multidex:multidex:2.0.1'
     dependencies.utilcodex = 'com.blankj:utilcodex:1.31.1'
     dependencies.recyclerview = 'androidx.recyclerview:recyclerview:1.2.1'
