@@ -26,7 +26,7 @@ import com.brave.viewbindingdelegate.activityViewBinding
  *
  * ***desc***       ：Activity常用类
  */
-@Suppress("UNCHECKED_CAST", "REDUNDANT_MODIFIER", "SortModifiers", "PrivatePropertyName")
+@Suppress("PrivatePropertyName")
 abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     : AppCompatActivity(), ICommonView {
     private val TAG by lazy { this::class.java.simpleName }
@@ -91,12 +91,12 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     /**
      * 初始化[viewModel]的id
      */
-    open protected abstract val variableId: Int
+    abstract val variableId: Int
 
     /**
      * ViewModel密匙
      */
-    open protected val viewModelKey: String = "taskId_${TAG}_$taskId"
+    open val viewModelKey: String = "taskId_${TAG}_$taskId"
 
     /**
      * 刷新布局
@@ -145,29 +145,17 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
         startActivity(intent)
     }
 
-    /**
-     * 获取页面传递参数，使用[CommonActivity.startActivity]方法进入的
-     * @param T 泛型参数类型
-     * @param key 对应key
-     * @param default 默认值
-     * @return T 参数类型
-     */
-    @JvmOverloads
-    fun <T : Any> getParam(key: String, default: T? = null): T? {
-        val bundle = intent?.extras ?: return null
-        return (bundle.get(key) as? T?) ?: default
-    }
-
     override fun onDestroy() {
         // 销毁时取消所有回调函数的持有
         callbacks.clear()
+        register.unregister()
         super.onDestroy()
     }
 
-    private val callbacks = linkedMapOf<Int, (ActivityResult) -> Unit>()
     private val mRequestCode by lazy {
-        getParam(CommonConfig.REQUEST_CODE, -1) ?: -1
+        intent?.extras?.getInt(CommonConfig.REQUEST_CODE, -1) ?: -1
     }
+    private val callbacks = linkedMapOf<Int, (ActivityResult) -> Unit>()
     private val register = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -185,12 +173,13 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     fun <AC : Activity> startActivityForResult(
         cls: Class<AC>,
         bundle: Bundle = bundleOf(),
+        requestCode: Int? = null,
         callback: (ActivityResult) -> Unit = {}
     ) {
-        val requestCode = cls.hashCode()
-        callbacks[requestCode] = callback
+        val code = requestCode ?: cls.hashCode()
+        callbacks[code] = callback
         register.launch(Intent(this, cls).let { intent ->
-            bundle.putInt(CommonConfig.REQUEST_CODE, requestCode)
+            bundle.putInt(CommonConfig.REQUEST_CODE, code)
             intent.putExtras(bundle)
         })
     }
@@ -199,7 +188,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
      * 该[方法][finishForResult]需与[startActivityForResult]联用
      */
     @JvmOverloads
-    fun finishForResult(resultCode: Int, data: Bundle = bundleOf()) {
+    fun finishForResult(resultCode: Int = RESULT_OK, data: Bundle = bundleOf()) {
         val intent = Intent()
         data.putInt(CommonConfig.REQUEST_CODE, mRequestCode)
         intent.putExtras(data)
