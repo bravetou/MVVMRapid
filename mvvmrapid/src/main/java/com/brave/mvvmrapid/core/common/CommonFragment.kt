@@ -75,8 +75,8 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initStart()
-        initSystemBar()
         initBinding()
+        initSystemBar()
         updateDefaultUI()
         initGlobalBus()
         initView(savedInstanceState)
@@ -86,7 +86,7 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
         initEnd()
     }
 
-    private fun initBinding() {
+    protected open fun initBinding() {
         binding.let { binding ->
             // [ViewDataBinding]
             if (binding is ViewDataBinding) {

@@ -62,8 +62,9 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initStart()
-        initSystemBar()
         initBinding()
+        // 此处考虑到与immersionBar一起使用时需要使用布局文件中的View，所以与initBinding交换位置
+        initSystemBar()
         updateDefaultUI()
         initGlobalBus()
         initView(savedInstanceState)
@@ -73,7 +74,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
         initEnd()
     }
 
-    private fun initBinding() {
+    protected open fun initBinding() {
         // 设置布局
         setContentView(getRootView())
         binding.let { binding ->
