@@ -23,7 +23,7 @@ ext {
     dependencies.appcompat = 'androidx.appcompat:appcompat:1.5.1'
     dependencies.material = 'com.google.android.material:material:1.7.0'
     dependencies.activityKtx = 'androidx.activity:activity-ktx:1.6.1'
-    dependencies.fragmentKtx = 'androidx.fragment:fragment-ktx:1.5.4'
+    dependencies.fragmentKtx = 'androidx.fragment:fragment-ktx:1.5.5'
     dependencies.multidex = 'androidx.multidex:multidex:2.0.1'
     dependencies.utilcodex = 'com.blankj:utilcodex:1.31.1'
     dependencies.constraintlayout = 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -32,6 +32,6 @@ ext {
             'io.github.cymchad:BaseRecyclerViewAdapterHelper:3.0.9'
 
     dependencies.junit = 'junit:junit:4.13.2'
-    dependencies.androidxJunit = 'androidx.test.ext:junit:1.1.3'
-    dependencies.espressoCore = 'androidx.test.espresso:espresso-core:3.4.0'
+    dependencies.androidxJunit = 'androidx.test.ext:junit:1.1.5'
+    dependencies.espressoCore = 'androidx.test.espresso:espresso-core:3.5.1'
 }
