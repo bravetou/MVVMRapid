@@ -1,6 +1,7 @@
 package com.brave.mvvmrapid.core.common
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,7 +32,7 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
 
     private val allGenerics by lazy { GenericsHelper(javaClass).classes }
 
-    open val binding: Binding by fragmentViewBinding(onViewDestroyed = {
+    protected open val binding: Binding by fragmentViewBinding(onViewDestroyed = {
         if (it is ViewDataBinding) it.unbind()
     }, viewBinder = { _ ->
         initViewBinding() ?: allGenerics.filterIsInstance<Class<Binding>>()
@@ -40,9 +41,9 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
         ?: error("Generic <Binding> not found")
     }, viewNeedsInitialization = false)
 
-    open fun initViewBinding(): Binding? = null
+    protected open fun initViewBinding(): Binding? = null
 
-    open val viewModel: VM by lazy {
+    protected open val viewModel: VM by lazy {
         initViewModel() ?: allGenerics
             .filterIsInstance<Class<VM>>()
             .find { CommonViewModel::class.java.isAssignableFrom(it) }
@@ -50,17 +51,26 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
         ?: error("Generic <VM> not found")
     }
 
-    open fun initViewModel(): VM? = null
+    protected open fun initViewModel(): VM? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
+    ): View = getRootView(inflater, container, savedInstanceState)
+
+    /**
+     * 获取根布局
+     * @return 根布局，默认返回[Binding]的[root][ViewBinding.getRoot]
+     */
+    protected open fun getRootView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View = binding.root
 
-    protected val context by lazy {
-        requireActivity()
-    }
+    override fun getContext(): Context =
+        super.getContext() ?: error("Fragment $this not attached to a context.")
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -93,17 +103,17 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
     /**
      * 初始化[viewModel]的id
      */
-    abstract val variableId: Int
+    protected abstract val variableId: Int
 
     /**
      * ViewModel密匙
      */
-    open val viewModelKey: String = "taskId_${TAG}_$tag"
+    protected open val viewModelKey: String = "taskId_${TAG}_$tag"
 
     /**
      * 刷新布局
      */
-    open fun refreshLayout() {
+    protected open fun refreshLayout() {
         binding.let { binding ->
             if (binding is ViewDataBinding) {
                 binding.setVariable(variableId, viewModel)
@@ -132,9 +142,9 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
         viewModel.defUI.onError.observe(viewLifecycleOwner) { e -> onError(e) }
     }
 
-    open fun onStart(text: String) {}
-    open fun onComplete() {}
-    open fun onError(e: Throwable) {}
+    protected open fun onStart(text: String) {}
+    protected open fun onComplete() {}
+    protected open fun onError(e: Throwable) {}
 
     /**
      * 跳转页面

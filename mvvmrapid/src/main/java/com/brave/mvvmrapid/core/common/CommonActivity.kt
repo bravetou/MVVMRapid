@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -33,7 +34,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
 
     private val allGenerics by lazy { GenericsHelper(javaClass).classes }
 
-    open val binding: Binding by activityViewBinding(onViewDestroyed = {
+    protected open val binding: Binding by activityViewBinding(onViewDestroyed = {
         if (it is ViewDataBinding) it.unbind()
     }, viewBinder = { _ ->
         initViewBinding() ?: allGenerics.filterIsInstance<Class<Binding>>()
@@ -42,9 +43,9 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
         ?: error("Generic <Binding> not found")
     }, viewNeedsInitialization = false)
 
-    open fun initViewBinding(): Binding? = null
+    protected open fun initViewBinding(): Binding? = null
 
-    open val viewModel: VM by lazy {
+    protected open val viewModel: VM by lazy {
         initViewModel() ?: allGenerics
             .filterIsInstance<Class<VM>>()
             .find { CommonViewModel::class.java.isAssignableFrom(it) }
@@ -52,7 +53,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
         ?: error("Generic <VM> not found")
     }
 
-    open fun initViewModel(): VM? = null
+    protected open fun initViewModel(): VM? = null
 
     protected val context: Context by lazy { this }
 
@@ -73,9 +74,9 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     }
 
     private fun initBinding() {
+        // 设置布局
+        setContentView(getRootView())
         binding.let { binding ->
-            // 设置布局
-            setContentView(binding.root)
             // [ViewDataBinding]
             if (binding is ViewDataBinding) {
                 // 关联ViewModel
@@ -89,19 +90,25 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     }
 
     /**
+     * 获取根布局
+     * @return 根布局，默认返回[Binding]的[root][ViewBinding.getRoot]
+     */
+    protected open fun getRootView(): View = binding.root
+
+    /**
      * 初始化[viewModel]的id
      */
-    abstract val variableId: Int
+    protected abstract val variableId: Int
 
     /**
      * ViewModel密匙
      */
-    open val viewModelKey: String = "taskId_${TAG}_$taskId"
+    protected open val viewModelKey: String = "taskId_${TAG}_$taskId"
 
     /**
      * 刷新布局
      */
-    open fun refreshLayout() {
+    protected open fun refreshLayout() {
         binding.let { binding ->
             if (binding is ViewDataBinding) {
                 binding.setVariable(variableId, viewModel)
@@ -130,9 +137,9 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
         viewModel.defUI.onError.observe(this) { e -> onError(e) }
     }
 
-    open fun onStart(text: String) {}
-    open fun onComplete() {}
-    open fun onError(e: Throwable) {}
+    protected open fun onStart(text: String) {}
+    protected open fun onComplete() {}
+    protected open fun onError(e: Throwable) {}
 
     /**
      * 跳转页面
