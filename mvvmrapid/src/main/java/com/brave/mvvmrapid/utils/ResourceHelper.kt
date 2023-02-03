@@ -1,4 +1,4 @@
-@file:Suppress("USELESS_ELVIS")
+@file:JvmName("ResourceHelper")
 
 package com.brave.mvvmrapid.utils
 

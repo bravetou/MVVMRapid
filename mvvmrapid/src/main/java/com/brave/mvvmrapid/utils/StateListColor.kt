@@ -13,10 +13,6 @@ import androidx.annotation.ColorRes
  *
  * ***desc***       ：动态颜色
  */
-@Suppress(
-    "unused",
-    "MemberVisibilityCanBePrivate"
-)
 class StateListColor private constructor() {
     companion object {
         fun newInstance() = StateListColor()

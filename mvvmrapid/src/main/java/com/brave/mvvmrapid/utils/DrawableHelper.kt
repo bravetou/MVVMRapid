@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:JvmName("DrawableHelper")
 
 package com.brave.mvvmrapid.utils
 

@@ -1,3 +1,5 @@
+@file:JvmName("ViewBindingReflectExt")
+
 package com.brave.mvvmrapid.utils
 
 import android.view.LayoutInflater
@@ -27,9 +29,7 @@ fun <Binding : ViewBinding> Class<*>?.inflate(
     return when {
         ViewBinding::class.java.isAssignableFrom(cls) && cls != ViewBinding::class.java -> {
             // 如果[cls]继承至[ViewBinding]，并且不是[ViewBinding]
-            ReflectUtils.reflect(this)
-                .method(INFLATE, layoutInflater, parent, attachToRoot)
-                .get()
+            ReflectUtils.reflect(this).method(INFLATE, layoutInflater, parent, attachToRoot).get()
         }
         else -> null // 其他情况
     }

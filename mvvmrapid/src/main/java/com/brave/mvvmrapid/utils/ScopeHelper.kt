@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:JvmName("ScopeHelper")
 
 package com.brave.mvvmrapid.utils
 
@@ -45,10 +45,7 @@ fun launchScope(
     onStart: () -> Unit = { },
     onComplete: () -> Unit = { }
 ) = CoroutineScope(
-    SupervisorJob() +
-            CoroutineName(TAG) +
-            dispatcher +
-            handlerException(onError)
+    SupervisorJob() + CoroutineName(TAG) + dispatcher + handlerException(onError)
 ).launch {
     onStart()
     block()

@@ -1,3 +1,5 @@
+@file:JvmName("StateHelper")
+
 package com.brave.mvvmrapid.utils
 
 import android.graphics.drawable.Drawable

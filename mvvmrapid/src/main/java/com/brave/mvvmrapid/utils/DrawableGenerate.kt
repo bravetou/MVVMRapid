@@ -18,7 +18,6 @@ import java.lang.ref.WeakReference
  *
  * ***desc***       ：Drawable生成工具
  */
-@Suppress("unused", "ProtectedInFinal", "MemberVisibilityCanBePrivate", "USELESS_ELVIS")
 class DrawableGenerate private constructor() {
     /**
      * 背景颜色

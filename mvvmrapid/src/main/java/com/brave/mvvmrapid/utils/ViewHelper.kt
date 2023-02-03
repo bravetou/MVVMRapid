@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:JvmName("ViewHelper")
 
 package com.brave.mvvmrapid.utils
 
@@ -23,12 +23,11 @@ fun View?.drawBackground(): DrawableGenerate {
  */
 fun View?.drawableTint(@ColorInt color: Int) {
     if (null == this) return
-    val mDrawable =
-        if (this is ImageView) {
-            this.drawable ?: this.background
-        } else {
-            this.background
-        } ?: return
+    val mDrawable = if (this is ImageView) {
+        this.drawable ?: this.background
+    } else {
+        this.background
+    } ?: return
     mDrawable.dyeing(color)
 }
 

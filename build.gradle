@@ -14,14 +14,14 @@ ext {
     compileSdkVersion = 33
     minSdkVersion = 16
     targetSdkVersion = 33
-    versionCode = 108
-    versionName = "1.0.8"
+    versionCode = 109
+    versionName = "1.0.9"
 
     dependencies = [:]
 
     dependencies.coreKtx = 'androidx.core:core-ktx:1.9.0'
-    dependencies.appcompat = 'androidx.appcompat:appcompat:1.5.1'
-    dependencies.material = 'com.google.android.material:material:1.7.0'
+    dependencies.appcompat = 'androidx.appcompat:appcompat:1.6.0'
+    dependencies.material = 'com.google.android.material:material:1.8.0'
     dependencies.activityKtx = 'androidx.activity:activity-ktx:1.6.1'
     dependencies.fragmentKtx = 'androidx.fragment:fragment-ktx:1.5.5'
     dependencies.multidex = 'androidx.multidex:multidex:2.0.1'
