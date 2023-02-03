@@ -23,7 +23,7 @@ buildFeatures {
 ```groovy
 allprojects {
     repositories {
-        ...
+        // ...
         maven { url 'https://jitpack.io' }
     }
 }
@@ -33,13 +33,13 @@ allprojects {
 ```groovy
 dependencies {
     // mvvm core
-    implementation 'com.github.bravetou.MVVMRapid:mvvmrapid:1.0.6'
+    implementation 'com.github.bravetou.MVVMRapid:mvvmrapid:1.0.9'
     // mvvm recyclerView
-    implementation 'com.github.bravetou.MVVMRapid:mvvmrapid-rv:1.0.6'
+    implementation 'com.github.bravetou.MVVMRapid:mvvmrapid-rv:1.0.9'
     // no reflection viewBinding delegate
-    implementation 'com.github.bravetou.MVVMRapid:binding-delegate-no-reflection:1.0.6'
+    implementation 'com.github.bravetou.MVVMRapid:binding-delegate-no-reflection:1.0.9'
     // reflect viewBinding delegate
-    implementation 'com.github.bravetou.MVVMRapid:binding-delegate-reflect:1.0.6'
+    implementation 'com.github.bravetou.MVVMRapid:binding-delegate-reflect:1.0.9'
 }
 ```
 
