@@ -56,7 +56,7 @@ fun setCheckableChecked(
  * [View.setOnClickListener]
  * @param debouncingDuration 防抖动持续时间
  */
-@BindingAdapter(value = ["onClickCommand", "debouncingDuration"], requireAll = false)
+@BindingAdapter(value = ["debouncingDuration", "onClickCommand"], requireAll = false)
 fun onClickCommand(
     view: View,
     debouncingDuration: Long? = null,
