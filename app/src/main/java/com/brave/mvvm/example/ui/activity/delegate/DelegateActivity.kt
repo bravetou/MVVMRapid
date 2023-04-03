@@ -45,8 +45,7 @@ class DelegateActivity : CommonActivity<ActivityDelegateBinding, DelegateViewMod
 
     override fun onBackPressed() {
         finishForResult(
-            RESULT_OK,
-            bundleOf(
+            RESULT_OK, bundleOf(
                 "back" to "delegate finish!"
             )
         )
@@ -88,8 +87,7 @@ class DelegateTemplateNoReflectionActivity :
     }
 }
 
-class DelegateTemplateReflectInflateActivity :
-    AppCompatActivity() {
+class DelegateTemplateReflectInflateActivity : AppCompatActivity() {
     private val binding by viewBinding<ActivityDelegateTemplateBinding>(CreateMethod.INFLATE)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,8 +98,7 @@ class DelegateTemplateReflectInflateActivity :
     }
 }
 
-class DelegateTemplateReflectBindActivity :
-    AppCompatActivity(R.layout.activity_delegate_template) {
+class DelegateTemplateReflectBindActivity : AppCompatActivity(R.layout.activity_delegate_template) {
     private val binding: ActivityDelegateTemplateBinding by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -139,15 +136,14 @@ private fun AppCompatActivity.initRecycler(binding: ActivityDelegateTemplateBind
             else -> null
         }?.let {
             if (!it.tag.isNullOrEmpty()) return@setOnItemClickListener
-            supportFragmentManager.beginTransaction()
-                .add(
-                    binding.fragment.id, it, when (item.id) {
-                        0 -> DelegateTemplateNoReflectionFragment.TAG
-                        1 -> DelegateTemplateReflectInflateFragment.TAG
-                        2 -> DelegateTemplateReflectBindFragment.TAG
-                        else -> null
-                    }
-                ).commitNow()
+            supportFragmentManager.beginTransaction().add(
+                binding.fragment.id, it, when (item.id) {
+                    0 -> DelegateTemplateNoReflectionFragment.TAG
+                    1 -> DelegateTemplateReflectInflateFragment.TAG
+                    2 -> DelegateTemplateReflectBindFragment.TAG
+                    else -> null
+                }
+            ).commitNow()
         }
     }
 
@@ -177,9 +173,7 @@ private fun AppCompatActivity.initRecycler(binding: ActivityDelegateTemplateBind
             }
             else -> null
         }?.let {
-            supportFragmentManager.beginTransaction()
-                .remove(it)
-                .commitNow()
+            supportFragmentManager.beginTransaction().remove(it).commitNow()
         }
     }
 }
@@ -190,19 +184,13 @@ private val showAdapter by lazy {
 private val showData by lazy {
     mutableListOf(
         FunctionBean(
-            0,
-            -1,
-            StringUtils.getString(R.string.str_show_no_reflection_fragments)
+            0, -1, StringUtils.getString(R.string.str_show_no_reflection_fragments)
         ),
         FunctionBean(
-            1,
-            -1,
-            StringUtils.getString(R.string.str_show_reflection_inflate_method_fragment)
+            1, -1, StringUtils.getString(R.string.str_show_reflection_inflate_method_fragment)
         ),
         FunctionBean(
-            2,
-            -1,
-            StringUtils.getString(R.string.str_show_reflection_bind_method_fragment)
+            2, -1, StringUtils.getString(R.string.str_show_reflection_bind_method_fragment)
         ),
     )
 }
@@ -212,19 +200,13 @@ private val removeAdapter by lazy {
 private val removeData by lazy {
     mutableListOf(
         FunctionBean(
-            0,
-            -1,
-            StringUtils.getString(R.string.str_remove_no_reflection_fragments)
+            0, -1, StringUtils.getString(R.string.str_remove_no_reflection_fragments)
         ),
         FunctionBean(
-            1,
-            -1,
-            StringUtils.getString(R.string.str_remove_reflection_inflate_method_fragment)
+            1, -1, StringUtils.getString(R.string.str_remove_reflection_inflate_method_fragment)
         ),
         FunctionBean(
-            2,
-            -1,
-            StringUtils.getString(R.string.str_remove_reflection_bind_method_fragment)
+            2, -1, StringUtils.getString(R.string.str_remove_reflection_bind_method_fragment)
         ),
     )
 }

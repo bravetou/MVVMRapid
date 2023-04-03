@@ -2,11 +2,12 @@ package com.brave.mvvmrapid.core.common
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.core.os.bundleOf
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -26,8 +27,8 @@ import com.brave.viewbindingdelegate.fragmentViewBinding
  * ***desc***       ：Fragment常用类
  */
 @Suppress("PrivatePropertyName")
-abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
-    : Fragment(), ICommonView {
+abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel> : Fragment(),
+    ICommonView {
     private val TAG by lazy { this::class.java.simpleName }
 
     private val allGenerics by lazy { GenericsHelper(javaClass).classes }
@@ -37,18 +38,15 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
     }, viewBinder = { _ ->
         initViewBinding() ?: allGenerics.filterIsInstance<Class<Binding>>()
             .find { ViewBinding::class.java.isAssignableFrom(it) }
-            ?.inflate(layoutInflater)
-        ?: error("Generic <Binding> not found")
+            ?.inflate(layoutInflater) ?: error("Generic <Binding> not found")
     }, viewNeedsInitialization = false)
 
     protected open fun initViewBinding(): Binding? = null
 
     protected open val viewModel: VM by lazy {
-        initViewModel() ?: allGenerics
-            .filterIsInstance<Class<VM>>()
+        initViewModel() ?: allGenerics.filterIsInstance<Class<VM>>()
             .find { CommonViewModel::class.java.isAssignableFrom(it) }
-            ?.let { ViewModelProvider(this)[viewModelKey, it] }
-        ?: error("Generic <VM> not found")
+            ?.let { ViewModelProvider(this)[viewModelKey, it] } ?: error("Generic <VM> not found")
     }
 
     protected open fun initViewModel(): VM? = null
@@ -147,7 +145,8 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
     protected open fun onError(e: Throwable) {}
 
     /**
-     * 跳转页面
+     * 跳转页面，
+     * 只有Activity继承至[CommonActivity]才可正常使用
      * @param bundle 参数
      */
     @JvmOverloads
@@ -159,14 +158,38 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
     }
 
     /**
-     * 该[方法][startActivityForResult]需与[finishForResult]联用
+     * 跳转页面，
+     * 只有Activity继承至[CommonActivity]才可正常使用
+     * @param launcher 可用于启动活动或处理已准备调用的启动程序
+     * @param bundle 参数
+     */
+    @JvmOverloads
+    inline fun <reified AC : Activity> startActivityForResult(
+        launcher: ActivityResultLauncher<Intent>,
+        bundle: Bundle = bundleOf(),
+    ) {
+        val activity = activity ?: return
+        if (activity is CommonActivity<*, *>) {
+            activity.startActivityForResult<AC>(launcher, bundle)
+        }
+    }
+
+    override fun onDestroyView() {
+        // 解绑ViewDataBinding
+        binding.also { binding -> if (binding is ViewDataBinding) binding.unbind() }
+        super.onDestroyView()
+    }
+
+    /**
+     * 该[方法][startActivityForResult]需与[finishForResult]联用，
+     * 只有Activity继承至[CommonActivity]才可正常使用
      */
     @JvmOverloads
     fun <AC : Activity> startActivityForResult(
         cls: Class<AC>,
         bundle: Bundle = bundleOf(),
         requestCode: Int? = null,
-        callback: (ActivityResult) -> Unit = {}
+        callback: (Bundle) -> Unit = {}
     ) {
         val activity = activity ?: return
         if (activity is CommonActivity<*, *>) {
@@ -176,10 +199,11 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel>
     }
 
     /**
-     * 该[方法][finishForResult]需与[startActivityForResult]联用
+     * 该[方法][finishForResult]需与[startActivityForResult]联用，
+     * 只有Activity继承至[CommonActivity]才可正常使用
      */
     @JvmOverloads
-    fun finishForResult(resultCode: Int, data: Bundle = bundleOf()) {
+    fun finishForResult(resultCode: Int = Activity.RESULT_OK, data: Bundle = bundleOf()) {
         val activity = activity ?: return
         if (activity is CommonActivity<*, *>) {
             activity.finishForResult(resultCode, data)

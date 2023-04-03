@@ -5,17 +5,16 @@ import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.annotation.RestrictTo
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.viewbinding.ViewBinding
 
 @PublishedApi
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 internal class ViewGroupViewBindingProperty<in V : ViewGroup, out Binding : ViewBinding>(
-    onViewDestroyed: (Binding) -> Unit,
-    viewBinder: (V) -> Binding
+    onViewDestroyed: (Binding) -> Unit, viewBinder: (V) -> Binding
 ) : LifecycleViewBindingProperty<V, Binding>(viewBinder, onViewDestroyed) {
     override fun getLifecycleOwner(thisRef: V): LifecycleOwner =
-        checkNotNull(ViewTreeLifecycleOwner.get(thisRef)) {
+        checkNotNull(thisRef.findViewTreeLifecycleOwner()) {
             "Fragment doesn't have a view associated with it or the view has been destroyed"
         }
 }
@@ -27,28 +26,25 @@ internal class ViewGroupViewBindingProperty<in V : ViewGroup, out Binding : View
 inline fun <Binding : ViewBinding> ViewGroup.viewBinding(
     crossinline vbFactory: (ViewGroup) -> Binding,
 ): ViewBindingProperty<ViewGroup, Binding> = viewBinding(
-    lifecycleAware = false,
-    vbFactory
+    lifecycleAware = false, vbFactory
 )
 
 /**
  * 创建一个与[ViewGroup]关联的[ViewBinding]
  * @param vbFactory 创建[ViewBinding]的函数。可以直接使用*MyViewBinding::bind*
- * @param lifecycleAware 使用[ViewTreeLifecycleOwner]从[ViewGroup][ViewGroup]中获取[LifecycleOwner]
+ * @param lifecycleAware 从[ViewGroup][ViewGroup]中获取[LifecycleOwner]
  */
 inline fun <Binding : ViewBinding> ViewGroup.viewBinding(
     lifecycleAware: Boolean,
     crossinline vbFactory: (ViewGroup) -> Binding,
 ): ViewBindingProperty<ViewGroup, Binding> = viewBinding(
-    lifecycleAware,
-    vbFactory,
-    emptyVbCallback()
+    lifecycleAware, vbFactory, emptyVbCallback()
 )
 
 /**
  * 创建一个与[ViewGroup]关联的[ViewBinding]
  * @param vbFactory 创建[ViewBinding]的函数。可以直接使用*MyViewBinding::bind*
- * @param lifecycleAware 使用[ViewTreeLifecycleOwner]从[ViewGroup][ViewGroup]中获取[LifecycleOwner]
+ * @param lifecycleAware 从[ViewGroup][ViewGroup]中获取[LifecycleOwner]
  * @param onViewDestroyed 视图销毁回调函数
  */
 inline fun <Binding : ViewBinding> ViewGroup.viewBinding(
@@ -77,42 +73,39 @@ inline fun <Binding : ViewBinding> ViewGroup.viewBinding(
  * @param onViewDestroyed 视图销毁回调函数
  */
 inline fun <Binding : ViewBinding> ViewGroup.viewBinding(
-    @IdRes viewBindingRootId: Int,
+    @IdRes
+    viewBindingRootId: Int,
     crossinline vbFactory: (View) -> Binding,
     noinline onViewDestroyed: (Binding) -> Unit,
 ): ViewBindingProperty<ViewGroup, Binding> = viewBinding(
-    viewBindingRootId,
-    lifecycleAware = false,
-    vbFactory,
-    onViewDestroyed
+    viewBindingRootId, lifecycleAware = false, vbFactory, onViewDestroyed
 )
 
 /**
  * 创建一个与[ViewGroup]关联的[ViewBinding]
  * @param vbFactory 创建[ViewBinding]的函数。可以直接使用*MyViewBinding::bind*
- * @param lifecycleAware 使用[ViewTreeLifecycleOwner]从[ViewGroup][ViewGroup]中获取[LifecycleOwner]
+ * @param lifecycleAware 从[ViewGroup][ViewGroup]中获取[LifecycleOwner]
  * @param viewBindingRootId [View] ID
  */
 inline fun <Binding : ViewBinding> ViewGroup.viewBinding(
-    @IdRes viewBindingRootId: Int,
+    @IdRes
+    viewBindingRootId: Int,
     lifecycleAware: Boolean,
     crossinline vbFactory: (View) -> Binding,
 ): ViewBindingProperty<ViewGroup, Binding> = viewBinding(
-    viewBindingRootId,
-    lifecycleAware,
-    vbFactory,
-    emptyVbCallback()
+    viewBindingRootId, lifecycleAware, vbFactory, emptyVbCallback()
 )
 
 /**
  * 创建一个与[ViewGroup]关联的[ViewBinding]
  * @param vbFactory 创建[ViewBinding]的函数。可以直接使用*MyViewBinding::bind*
- * @param lifecycleAware 使用[ViewTreeLifecycleOwner]从[ViewGroup][ViewGroup]中获取[LifecycleOwner]
+ * @param lifecycleAware 从[ViewGroup][ViewGroup]中获取[LifecycleOwner]
  * @param viewBindingRootId [View] ID
  * @param onViewDestroyed 视图销毁回调函数
  */
 inline fun <Binding : ViewBinding> ViewGroup.viewBinding(
-    @IdRes viewBindingRootId: Int,
+    @IdRes
+    viewBindingRootId: Int,
     lifecycleAware: Boolean,
     crossinline vbFactory: (View) -> Binding,
     noinline onViewDestroyed: (Binding) -> Unit,

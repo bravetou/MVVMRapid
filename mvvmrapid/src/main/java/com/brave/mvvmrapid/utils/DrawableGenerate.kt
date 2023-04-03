@@ -110,7 +110,10 @@ class DrawableGenerate private constructor() {
      * 设置背景颜色
      * @param color Int颜色值
      */
-    fun setBackgroundColor(@ColorInt color: Int): DrawableGenerate {
+    fun setBackgroundColor(
+        @ColorInt
+        color: Int
+    ): DrawableGenerate {
         this.mBackgroundColor = color
         return this
     }
@@ -119,7 +122,10 @@ class DrawableGenerate private constructor() {
      * 设置背景颜色
      * @param resId 颜色资源ID
      */
-    fun setBackgroundColorRes(@ColorRes resId: Int): DrawableGenerate {
+    fun setBackgroundColorRes(
+        @ColorRes
+        resId: Int
+    ): DrawableGenerate {
         return setBackgroundColor(globalContext.getColorIntX(resId))
     }
 
@@ -136,7 +142,10 @@ class DrawableGenerate private constructor() {
      * 设置边框宽度
      * @param width 边框宽度，单位[Px]
      */
-    fun setBorderWidth(@Px width: Int): DrawableGenerate {
+    fun setBorderWidth(
+        @Px
+        width: Int
+    ): DrawableGenerate {
         this.mBorderWidth = width
         return this
     }
@@ -145,7 +154,10 @@ class DrawableGenerate private constructor() {
      * 设置边框宽度
      * @param width 边框宽度，单位[Px]
      */
-    fun setBorderWidth(@Px width: Float): DrawableGenerate {
+    fun setBorderWidth(
+        @Px
+        width: Float
+    ): DrawableGenerate {
         return setBorderWidth(width.toInt())
     }
 
@@ -153,7 +165,10 @@ class DrawableGenerate private constructor() {
      * 设置边框宽度
      * @param width 边框宽度，单位[Px]
      */
-    fun setBorderWidth(@Px width: Double): DrawableGenerate {
+    fun setBorderWidth(
+        @Px
+        width: Double
+    ): DrawableGenerate {
         return setBorderWidth(width.toInt())
     }
 
@@ -161,7 +176,10 @@ class DrawableGenerate private constructor() {
      * 设置边框颜色
      * @param color Int颜色值
      */
-    fun setBorderColor(@ColorInt color: Int): DrawableGenerate {
+    fun setBorderColor(
+        @ColorInt
+        color: Int
+    ): DrawableGenerate {
         this.mBorderColor = color
         return this
     }
@@ -170,7 +188,10 @@ class DrawableGenerate private constructor() {
      * 设置边框颜色
      * @param resId 颜色资源ID
      */
-    fun setBorderColorRes(@ColorRes resId: Int): DrawableGenerate {
+    fun setBorderColorRes(
+        @ColorRes
+        resId: Int
+    ): DrawableGenerate {
         return setBorderColor(globalContext.getColorIntX(resId))
     }
 
@@ -186,7 +207,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCorners(@Px corners: Float): DrawableGenerate {
+    fun setRoundedCorners(
+        @Px
+        corners: Float
+    ): DrawableGenerate {
         this.mRoundedCornersLT = corners
         this.mRoundedCornersRT = corners
         this.mRoundedCornersRB = corners
@@ -198,7 +222,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCorners(@Px corners: Int): DrawableGenerate {
+    fun setRoundedCorners(
+        @Px
+        corners: Int
+    ): DrawableGenerate {
         return setRoundedCorners(corners.toFloat())
     }
 
@@ -206,7 +233,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCorners(@Px corners: Double): DrawableGenerate {
+    fun setRoundedCorners(
+        @Px
+        corners: Double
+    ): DrawableGenerate {
         return setRoundedCorners(corners.toFloat())
     }
 
@@ -214,7 +244,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角（左上角）
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCornersLT(@Px corners: Float): DrawableGenerate {
+    fun setRoundedCornersLT(
+        @Px
+        corners: Float
+    ): DrawableGenerate {
         this.mRoundedCornersLT = corners
         return this
     }
@@ -223,7 +256,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角（左上角）
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCornersLT(@Px corners: Int): DrawableGenerate {
+    fun setRoundedCornersLT(
+        @Px
+        corners: Int
+    ): DrawableGenerate {
         return setRoundedCornersLT(corners.toFloat())
     }
 
@@ -231,7 +267,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角（左上角）
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCornersLT(@Px corners: Double): DrawableGenerate {
+    fun setRoundedCornersLT(
+        @Px
+        corners: Double
+    ): DrawableGenerate {
         return setRoundedCornersLT(corners.toFloat())
     }
 
@@ -239,7 +278,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角（右上角）
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCornersRT(@Px corners: Float): DrawableGenerate {
+    fun setRoundedCornersRT(
+        @Px
+        corners: Float
+    ): DrawableGenerate {
         this.mRoundedCornersRT = corners
         return this
     }
@@ -248,7 +290,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角（右上角）
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCornersRT(@Px corners: Int): DrawableGenerate {
+    fun setRoundedCornersRT(
+        @Px
+        corners: Int
+    ): DrawableGenerate {
         return setRoundedCornersRT(corners.toFloat())
     }
 
@@ -256,7 +301,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角（右上角）
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCornersRT(@Px corners: Double): DrawableGenerate {
+    fun setRoundedCornersRT(
+        @Px
+        corners: Double
+    ): DrawableGenerate {
         return setRoundedCornersRT(corners.toFloat())
     }
 
@@ -264,7 +312,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角（右下角）
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCornersRB(@Px corners: Float): DrawableGenerate {
+    fun setRoundedCornersRB(
+        @Px
+        corners: Float
+    ): DrawableGenerate {
         this.mRoundedCornersRB = corners
         return this
     }
@@ -273,7 +324,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角（右下角）
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCornersRB(@Px corners: Int): DrawableGenerate {
+    fun setRoundedCornersRB(
+        @Px
+        corners: Int
+    ): DrawableGenerate {
         return setRoundedCornersRB(corners.toFloat())
     }
 
@@ -281,7 +335,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角（右下角）
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCornersRB(@Px corners: Double): DrawableGenerate {
+    fun setRoundedCornersRB(
+        @Px
+        corners: Double
+    ): DrawableGenerate {
         return setRoundedCornersRB(corners.toFloat())
     }
 
@@ -289,7 +346,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角（左下角）
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCornersLB(@Px corners: Float): DrawableGenerate {
+    fun setRoundedCornersLB(
+        @Px
+        corners: Float
+    ): DrawableGenerate {
         this.mRoundedCornersLB = corners
         return this
     }
@@ -298,7 +358,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角（左下角）
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCornersLB(@Px corners: Int): DrawableGenerate {
+    fun setRoundedCornersLB(
+        @Px
+        corners: Int
+    ): DrawableGenerate {
         return setRoundedCornersLB(corners.toFloat())
     }
 
@@ -306,7 +369,10 @@ class DrawableGenerate private constructor() {
      * 设置圆角（左下角）
      * @param corners 圆角半径，单位[Px]
      */
-    fun setRoundedCornersLB(@Px corners: Double): DrawableGenerate {
+    fun setRoundedCornersLB(
+        @Px
+        corners: Double
+    ): DrawableGenerate {
         return setRoundedCornersLB(corners.toFloat())
     }
 
@@ -314,7 +380,10 @@ class DrawableGenerate private constructor() {
      * 设置透明度
      * @param alpha 0-255范围内的一个透明值
      */
-    fun setAlpha(@IntRange(from = 0, to = 255) alpha: Int): DrawableGenerate {
+    fun setAlpha(
+        @IntRange(from = 0, to = 255)
+        alpha: Int
+    ): DrawableGenerate {
         this.mAlpha = alpha
         return this
     }
@@ -323,7 +392,10 @@ class DrawableGenerate private constructor() {
      * 设置透明度
      * @param alpha 0.0-1.0范围内的一个透明度
      */
-    fun setAlpha(@FloatRange(from = 0.0, to = 1.0) alpha: Float): DrawableGenerate {
+    fun setAlpha(
+        @FloatRange(from = 0.0, to = 1.0)
+        alpha: Float
+    ): DrawableGenerate {
         return setAlpha((alpha * 255).toInt())
     }
 
@@ -331,7 +403,10 @@ class DrawableGenerate private constructor() {
      * 设置透明度
      * @param alpha 0.0-1.0范围内的一个透明度
      */
-    fun setAlpha(@FloatRange(from = 0.0, to = 1.0) alpha: Double): DrawableGenerate {
+    fun setAlpha(
+        @FloatRange(from = 0.0, to = 1.0)
+        alpha: Double
+    ): DrawableGenerate {
         return setAlpha((alpha * 255).toInt())
     }
 
@@ -350,7 +425,10 @@ class DrawableGenerate private constructor() {
      *
      * @param colors Int颜色值
      */
-    fun setGradientColor(@ColorInt vararg colors: Int): DrawableGenerate {
+    fun setGradientColor(
+        @ColorInt
+        vararg colors: Int
+    ): DrawableGenerate {
         val count = colors.size
         when {
             count >= 3 -> {
@@ -386,7 +464,10 @@ class DrawableGenerate private constructor() {
      *
      * @param resIds 颜色资源ID
      */
-    fun setGradientColorRes(@ColorRes vararg resIds: Int): DrawableGenerate {
+    fun setGradientColorRes(
+        @ColorRes
+        vararg resIds: Int
+    ): DrawableGenerate {
         val colors = mutableListOf<Int>()
         resIds.forEach {
             colors.add(globalContext.getColorIntX(it))

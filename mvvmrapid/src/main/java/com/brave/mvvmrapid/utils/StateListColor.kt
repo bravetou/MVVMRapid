@@ -28,7 +28,11 @@ class StateListColor private constructor() {
     /**
      * 添加一个状态组对应的颜色值
      */
-    fun addStateX(states: IntArray, @ColorInt color: Int): StateListColor {
+    fun addStateX(
+        states: IntArray,
+        @ColorInt
+        color: Int
+    ): StateListColor {
         data[states] = color
         return this
     }
@@ -36,7 +40,11 @@ class StateListColor private constructor() {
     /**
      * 添加一个状态组对应的颜色资源
      */
-    fun addStateXRes(states: IntArray, @ColorRes resId: Int): StateListColor {
+    fun addStateXRes(
+        states: IntArray,
+        @ColorRes
+        resId: Int
+    ): StateListColor {
         return addStateX(states, globalContext.getColorIntX(resId))
     }
 
@@ -50,7 +58,11 @@ class StateListColor private constructor() {
     /**
      * 添加一个单状态对应的颜色值
      */
-    fun addStateX(state: Int, @ColorInt color: Int): StateListColor {
+    fun addStateX(
+        state: Int,
+        @ColorInt
+        color: Int
+    ): StateListColor {
         data[intArrayOf(state)] = color
         return this
     }
@@ -58,7 +70,11 @@ class StateListColor private constructor() {
     /**
      * 添加一个单状态对应的颜色资源
      */
-    fun addStateXRes(state: Int, @ColorRes resId: Int): StateListColor {
+    fun addStateXRes(
+        state: Int,
+        @ColorRes
+        resId: Int
+    ): StateListColor {
         return addStateX(state, globalContext.getColorIntX(resId))
     }
 

@@ -29,14 +29,11 @@ class GenericsHelper(cls: Class<*>? = null) {
         when (val type = clazz.genericSuperclass) {
             is ParameterizedType -> type
             else -> null
-        }?.actualTypeArguments
-            ?.filterNotNull()
-            ?.filterIsInstance<Class<*>>()
-            ?.also {
-                if (it.isNotEmpty()) {
-                    classes.addAll(it)
-                }
+        }?.actualTypeArguments?.filterNotNull()?.filterIsInstance<Class<*>>()?.also {
+            if (it.isNotEmpty()) {
+                classes.addAll(it)
             }
+        }
         clazz.superclass?.let {
             findGenerics(it)
         }

@@ -18,5 +18,5 @@ object CommonConfig {
     /**
      * 请求码{key}
      */
-    const val REQUEST_CODE = "requestCode"
+    const val REQUEST_CODE = "MVVM_RAPID_REQUEST_CODE"
 }

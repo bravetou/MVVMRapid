@@ -23,7 +23,11 @@ fun StateListDrawable.addStateX(stateSet: IntArray, drawable: Drawable): StateLi
  * @param stateSet 状态集
  * @param resId [Drawable]资源ID
  */
-fun StateListDrawable.addStateX(stateSet: IntArray, @DrawableRes resId: Int): StateListDrawable {
+fun StateListDrawable.addStateX(
+    stateSet: IntArray,
+    @DrawableRes
+    resId: Int
+): StateListDrawable {
     this.addStateX(stateSet, globalContext.getDrawableX(resId))
     return this
 }
@@ -45,7 +49,11 @@ fun StateListDrawable.addStateX(state: Int, drawable: Drawable): StateListDrawab
  * @param state 单状态
  * @param resId [Drawable]资源ID
  */
-fun StateListDrawable.addStateX(state: Int, @DrawableRes resId: Int): StateListDrawable {
+fun StateListDrawable.addStateX(
+    state: Int,
+    @DrawableRes
+    resId: Int
+): StateListDrawable {
     this.addStateX(state, globalContext.getDrawableX(resId))
     return this
 }

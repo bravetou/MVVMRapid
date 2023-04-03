@@ -54,20 +54,18 @@ class MainActivity : TransferCopyActivity() {
                 0 -> {
                     // delegate
                     startActivityForResult(
-                        DelegateActivity::class.java,
-                        bundleOf("from" to javaClass.simpleName)
+                        DelegateActivity::class.java, bundleOf("from" to javaClass.simpleName)
                     ) {
-                        item.name = "${it.data?.extras?.getString("back", "delegate")}"
+                        item.name = it.getString("back", "delegate")
                         adapter.notifyItemChanged(position)
                     }
                 }
                 1 -> {
                     // mvvmrapid
                     startActivityForResult(
-                        MvvmRapidActivity::class.java,
-                        bundleOf("from" to javaClass.simpleName)
+                        MvvmRapidActivity::class.java, bundleOf("from" to javaClass.simpleName)
                     ) {
-                        item.name = "${it.data?.extras?.getString("back", "mvvmrapid")}"
+                        item.name = it.getString("back", "mvvmrapid")
                         adapter.notifyItemChanged(position)
                     }
                 }
@@ -86,8 +84,7 @@ class MainActivity : TransferCopyActivity() {
             .setRoundedCorners(SizeUtils.dp2px(24f))
             .build()
         binding.etMoney.filters = arrayOf(
-            MoneyInputFilter.newInstance(2),
-            InputFilter.LengthFilter(11)
+            MoneyInputFilter.newInstance(2), InputFilter.LengthFilter(11)
         )
     }
 
@@ -110,8 +107,6 @@ class MainActivity : TransferCopyActivity() {
     }
 }
 
-abstract class TransferActivity<Binding : ViewBinding> :
-    CommonActivity<Binding, MainViewModel>()
+abstract class TransferActivity<Binding : ViewBinding> : CommonActivity<Binding, MainViewModel>()
 
-abstract class TransferCopyActivity :
-    TransferActivity<ActivityMainBinding>()
+abstract class TransferCopyActivity : TransferActivity<ActivityMainBinding>()

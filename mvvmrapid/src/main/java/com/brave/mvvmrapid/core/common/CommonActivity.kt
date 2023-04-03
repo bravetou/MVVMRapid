@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
@@ -28,8 +29,8 @@ import com.brave.viewbindingdelegate.activityViewBinding
  * ***desc***       ：Activity常用类
  */
 @Suppress("PrivatePropertyName")
-abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
-    : AppCompatActivity(), ICommonView {
+abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel> : AppCompatActivity(),
+    ICommonView {
     private val TAG by lazy { this::class.java.simpleName }
 
     private val allGenerics by lazy { GenericsHelper(javaClass).classes }
@@ -39,18 +40,15 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
     }, viewBinder = { _ ->
         initViewBinding() ?: allGenerics.filterIsInstance<Class<Binding>>()
             .find { ViewBinding::class.java.isAssignableFrom(it) }
-            ?.inflate(layoutInflater)
-        ?: error("Generic <Binding> not found")
+            ?.inflate(layoutInflater) ?: error("Generic <Binding> not found")
     }, viewNeedsInitialization = false)
 
     protected open fun initViewBinding(): Binding? = null
 
     protected open val viewModel: VM by lazy {
-        initViewModel() ?: allGenerics
-            .filterIsInstance<Class<VM>>()
+        initViewModel() ?: allGenerics.filterIsInstance<Class<VM>>()
             .find { CommonViewModel::class.java.isAssignableFrom(it) }
-            ?.let { ViewModelProvider(this)[viewModelKey, it] }
-        ?: error("Generic <VM> not found")
+            ?.let { ViewModelProvider(this)[viewModelKey, it] } ?: error("Generic <VM> not found")
     }
 
     protected open fun initViewModel(): VM? = null
@@ -153,54 +151,88 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel>
         startActivity(intent)
     }
 
+    /**
+     * 跳转页面
+     * @param launcher 可用于启动活动或处理已准备调用的启动程序
+     * @param bundle 参数
+     */
+    @JvmOverloads
+    inline fun <reified AC : Activity> startActivityForResult(
+        launcher: ActivityResultLauncher<Intent>,
+        bundle: Bundle = bundleOf(),
+    ) {
+        launcher.launch(Intent(this, AC::class.java).also { intent ->
+            intent.putExtras(bundle)
+        })
+    }
+
     override fun onDestroy() {
         // 销毁时取消所有回调函数的持有
         callbacks.clear()
-        register.unregister()
+        launcher.unregister()
+        // 解绑ViewDataBinding
+        binding.also { binding -> if (binding is ViewDataBinding) binding.unbind() }
         super.onDestroy()
-    }
-
-    private val mRequestCode by lazy {
-        intent?.extras?.getInt(CommonConfig.REQUEST_CODE, -1) ?: -1
-    }
-    private val callbacks = linkedMapOf<Int, (ActivityResult) -> Unit>()
-    private val register = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        callbacks.filter { (requestCode, _) ->
-            requestCode == result.data?.extras?.getInt(CommonConfig.REQUEST_CODE)
-        }.forEach {
-            it.value(result)
-        }
     }
 
     /**
      * 该[方法][startActivityForResult]需与[finishForResult]联用
+     * @param callback 回调函数，若重写[onActivityResult]方法后，未回调super，则无法使用
      */
     @JvmOverloads
     fun <AC : Activity> startActivityForResult(
         cls: Class<AC>,
         bundle: Bundle = bundleOf(),
         requestCode: Int? = null,
-        callback: (ActivityResult) -> Unit = {}
+        callback: (Bundle) -> Unit = {},
     ) {
         val code = requestCode ?: cls.hashCode()
         callbacks[code] = callback
-        register.launch(Intent(this, cls).let { intent ->
-            bundle.putInt(CommonConfig.REQUEST_CODE, code)
+        launcher.launch(Intent(this, cls).also { intent ->
+            bundle.putInt(_requestKey, code)
             intent.putExtras(bundle)
         })
     }
 
     /**
-     * 该[方法][finishForResult]需与[startActivityForResult]联用
+     * 该[方法][finishForResult]可与[startActivityForResult]联用
      */
     @JvmOverloads
     fun finishForResult(resultCode: Int = RESULT_OK, data: Bundle = bundleOf()) {
         val intent = Intent()
-        data.putInt(CommonConfig.REQUEST_CODE, mRequestCode)
+        data.putInt(_requestKey, _requestCode)
         intent.putExtras(data)
         setResult(resultCode, intent)
         finish()
+    }
+
+    /**
+     * 请求码
+     */
+    private val _requestCode by lazy { intent?.extras?.getInt(_requestKey, -1) ?: -1 }
+    private val _requestKey by lazy { CommonConfig.REQUEST_CODE }
+    private val callbacks = linkedMapOf<Int, (Bundle) -> Unit>()
+
+    /**
+     * 带返回结果的启动程序的通用协议
+     */
+    private val contract = ActivityResultContracts.StartActivityForResult()
+
+    /**
+     * 可用于启动活动或处理已准备调用的启动程序
+     */
+    private val launcher = registerForActivityResult(contract, ::onActivityResult)
+
+    /**
+     * 启动程序返回之后的结果回调
+     */
+    open fun onActivityResult(result: ActivityResult?) {
+        result ?: return
+        val bundle = result.data?.extras ?: return
+        callbacks.filter { (requestCode, _) ->
+            requestCode == bundle.getInt(_requestKey)
+        }.forEach {
+            it.value(bundle)
+        }
     }
 }

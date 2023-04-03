@@ -29,7 +29,10 @@ val globalContext: Context
  * 获取颜色值
  */
 @ColorInt
-fun Context?.getColorIntX(@ColorRes resId: Int): Int {
+fun Context?.getColorIntX(
+    @ColorRes
+    resId: Int
+): Int {
     val mContext = this ?: globalContext
     return try {
         ContextCompat.getColor(mContext, resId)
@@ -43,7 +46,10 @@ fun Context?.getColorIntX(@ColorRes resId: Int): Int {
  * 获取颜色值
  */
 @ColorInt
-fun Fragment?.getColorIntX(@ColorRes resId: Int): Int {
+fun Fragment?.getColorIntX(
+    @ColorRes
+    resId: Int
+): Int {
     return this?.context.getColorIntX(resId)
 }
 
@@ -51,7 +57,10 @@ fun Fragment?.getColorIntX(@ColorRes resId: Int): Int {
  * 获取颜色值
  */
 @ColorInt
-fun Activity?.getColorIntX(@ColorRes resId: Int): Int {
+fun Activity?.getColorIntX(
+    @ColorRes
+    resId: Int
+): Int {
     return (this as? Context?).getColorIntX(resId)
 }
 
@@ -59,7 +68,10 @@ fun Activity?.getColorIntX(@ColorRes resId: Int): Int {
  * 获取颜色值
  */
 @ColorInt
-fun Application?.getColorIntX(@ColorRes resId: Int): Int {
+fun Application?.getColorIntX(
+    @ColorRes
+    resId: Int
+): Int {
     return this?.applicationContext.getColorIntX(resId)
 }
 
@@ -68,7 +80,10 @@ fun Application?.getColorIntX(@ColorRes resId: Int): Int {
  */
 @JvmOverloads
 @ColorInt
-fun String?.getColorIntX(@ColorInt defColor: Int = Color.TRANSPARENT): Int {
+fun String?.getColorIntX(
+    @ColorInt
+    defColor: Int = Color.TRANSPARENT
+): Int {
     if (null == this) return defColor
     return try {
         this.toColorInt()
@@ -81,7 +96,10 @@ fun String?.getColorIntX(@ColorInt defColor: Int = Color.TRANSPARENT): Int {
 /**
  * 获取Drawable
  */
-fun Context?.getDrawableX(@DrawableRes resId: Int): Drawable {
+fun Context?.getDrawableX(
+    @DrawableRes
+    resId: Int
+): Drawable {
     val mContext = this ?: globalContext
     return try {
         ContextCompat.getDrawable(mContext, resId) ?: ColorDrawable(Color.TRANSPARENT)
@@ -94,20 +112,29 @@ fun Context?.getDrawableX(@DrawableRes resId: Int): Drawable {
 /**
  * 获取Drawable
  */
-fun Fragment?.getDrawableX(@ColorRes resId: Int): Drawable {
+fun Fragment?.getDrawableX(
+    @ColorRes
+    resId: Int
+): Drawable {
     return this?.context.getDrawableX(resId)
 }
 
 /**
  * 获取Drawable
  */
-fun Activity?.getDrawableX(@ColorRes resId: Int): Drawable {
+fun Activity?.getDrawableX(
+    @ColorRes
+    resId: Int
+): Drawable {
     return (this as? Context?).getDrawableX(resId)
 }
 
 /**
  * 获取Drawable
  */
-fun Application?.getDrawableX(@ColorRes resId: Int): Drawable {
+fun Application?.getDrawableX(
+    @ColorRes
+    resId: Int
+): Drawable {
     return this?.applicationContext.getDrawableX(resId)
 }

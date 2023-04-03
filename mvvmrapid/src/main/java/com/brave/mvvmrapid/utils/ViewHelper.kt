@@ -21,7 +21,10 @@ fun View?.drawBackground(): DrawableGenerate {
  * View图片颜色渲染（View为ImageView默认渲染位图，其他则默认渲染背景）
  * @param color 渲染为指定颜色
  */
-fun View?.drawableTint(@ColorInt color: Int) {
+fun View?.drawableTint(
+    @ColorInt
+    color: Int
+) {
     if (null == this) return
     val mDrawable = if (this is ImageView) {
         this.drawable ?: this.background
@@ -35,7 +38,10 @@ fun View?.drawableTint(@ColorInt color: Int) {
  * View图片颜色渲染（View为ImageView默认渲染位图，其他则默认渲染背景）
  * @param resId 渲染为指定颜色资源
  */
-fun View?.drawableTintRes(@ColorRes resId: Int) {
+fun View?.drawableTintRes(
+    @ColorRes
+    resId: Int
+) {
     return this.drawableTint(globalContext.getColorIntX(resId))
 }
 

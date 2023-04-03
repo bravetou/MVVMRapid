@@ -12,7 +12,10 @@ import androidx.core.graphics.drawable.DrawableCompat
 /**
  * Drawable染色
  */
-fun Drawable?.dyeing(@ColorInt color: Int): Drawable {
+fun Drawable?.dyeing(
+    @ColorInt
+    color: Int
+): Drawable {
     return this?.let {
         val wrap = DrawableCompat.wrap(it)
         DrawableCompat.setTintList(wrap, ColorStateList.valueOf(color))
@@ -23,7 +26,10 @@ fun Drawable?.dyeing(@ColorInt color: Int): Drawable {
 /**
  * Drawable染色
  */
-fun Drawable?.dyeingRes(@ColorRes resId: Int): Drawable {
+fun Drawable?.dyeingRes(
+    @ColorRes
+    resId: Int
+): Drawable {
     return this.dyeing(globalContext.getColorIntX(resId))
 }
 

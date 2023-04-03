@@ -1,7 +1,6 @@
 package com.brave.mvvmrapid.core.common
 
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 
 /**
  * ***author***     ：brave tou
@@ -13,8 +12,8 @@ import androidx.lifecycle.LifecycleOwner
  * ***desc***       ：ICommonViewModel
  */
 interface ICommonViewModel : DefaultLifecycleObserver {
-    /**
-     * 生命周期视图树[LifecycleOwner]任意方法都会执行
-     */
+    // /**
+    //  * 生命周期视图树[LifecycleOwner]任意方法都会执行
+    //  */
     // fun onAny(owner: LifecycleOwner, event: Lifecycle.Event)
 }
