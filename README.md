@@ -33,13 +33,13 @@ allprojects {
 ```groovy
 dependencies {
     // mvvm core
-    implementation 'com.github.bravetou.MVVMRapid:mvvmrapid:1.1.2'
+    implementation 'com.github.bravetou.MVVMRapid:mvvmrapid:$version'
     // mvvm recyclerView
-    implementation 'com.github.bravetou.MVVMRapid:mvvmrapid-rv:1.1.2'
+    implementation 'com.github.bravetou.MVVMRapid:mvvmrapid-rv:$version'
     // no reflection viewBinding delegate
-    implementation 'com.github.bravetou.MVVMRapid:binding-delegate-no-reflection:1.1.2'
+    implementation 'com.github.bravetou.MVVMRapid:binding-delegate-no-reflection:$version'
     // reflect viewBinding delegate
-    implementation 'com.github.bravetou.MVVMRapid:binding-delegate-reflect:1.1.2'
+    implementation 'com.github.bravetou.MVVMRapid:binding-delegate-reflect:$version'
 }
 ```
 
