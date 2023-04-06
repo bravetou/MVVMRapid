@@ -113,7 +113,7 @@ fun Context?.getDrawableX(
  * 获取Drawable
  */
 fun Fragment?.getDrawableX(
-    @ColorRes
+    @DrawableRes
     resId: Int
 ): Drawable {
     return this?.context.getDrawableX(resId)
@@ -123,7 +123,7 @@ fun Fragment?.getDrawableX(
  * 获取Drawable
  */
 fun Activity?.getDrawableX(
-    @ColorRes
+    @DrawableRes
     resId: Int
 ): Drawable {
     return (this as? Context?).getDrawableX(resId)
@@ -133,7 +133,7 @@ fun Activity?.getDrawableX(
  * 获取Drawable
  */
 fun Application?.getDrawableX(
-    @ColorRes
+    @DrawableRes
     resId: Int
 ): Drawable {
     return this?.applicationContext.getDrawableX(resId)

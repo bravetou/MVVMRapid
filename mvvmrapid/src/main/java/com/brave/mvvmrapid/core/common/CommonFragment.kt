@@ -26,27 +26,26 @@ import com.brave.viewbindingdelegate.fragmentViewBinding
  *
  * ***desc***       ：Fragment常用类
  */
-@Suppress("PrivatePropertyName")
 abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel> : Fragment(),
     ICommonView {
-    private val TAG by lazy { this::class.java.simpleName }
+    private val _tag by lazy { this::class.java.simpleName }
 
-    private val allGenerics by lazy { GenericsHelper(javaClass).classes }
+    private val _helper by lazy { GenericsHelper(javaClass) }
 
     protected open val binding: Binding by fragmentViewBinding(onViewDestroyed = {
         if (it is ViewDataBinding) it.unbind()
     }, viewBinder = { _ ->
-        initViewBinding() ?: allGenerics.filterIsInstance<Class<Binding>>()
-            .find { ViewBinding::class.java.isAssignableFrom(it) }
-            ?.inflate(layoutInflater) ?: error("Generic <Binding> not found")
+        initViewBinding() ?: _helper.find<ViewBinding, Binding>() //
+            ?.inflate(layoutInflater) //
+        ?: error("Generic <Binding> not found")
     }, viewNeedsInitialization = false)
 
     protected open fun initViewBinding(): Binding? = null
 
     protected open val viewModel: VM by lazy {
-        initViewModel() ?: allGenerics.filterIsInstance<Class<VM>>()
-            .find { CommonViewModel::class.java.isAssignableFrom(it) }
-            ?.let { ViewModelProvider(this)[viewModelKey, it] } ?: error("Generic <VM> not found")
+        initViewModel() ?: _helper.find<CommonViewModel, VM>() //
+            ?.let { ViewModelProvider(this)[viewModelKey, it] } //
+        ?: error("Generic <VM> not found")
     }
 
     protected open fun initViewModel(): VM? = null
@@ -106,7 +105,7 @@ abstract class CommonFragment<Binding : ViewBinding, VM : CommonViewModel> : Fra
     /**
      * ViewModel密匙
      */
-    protected open val viewModelKey: String = "taskId_${TAG}_$tag"
+    protected open val viewModelKey: String = "taskId_${_tag}_$tag"
 
     /**
      * 刷新布局

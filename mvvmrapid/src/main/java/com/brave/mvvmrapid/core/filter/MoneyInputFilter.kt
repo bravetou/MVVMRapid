@@ -15,7 +15,6 @@ import com.brave.mvvmrapid.core.CommonConfig
  *
  * @param keepCount 需要保留的小数位数，默认保留两位小数
  */
-@Suppress("unused")
 class MoneyInputFilter private constructor(private val keepCount: Int = 2) : InputFilter {
     /**
      * 金额过滤器
@@ -34,7 +33,7 @@ class MoneyInputFilter private constructor(private val keepCount: Int = 2) : Inp
         end: Int,
         dest: Spanned?,
         dstart: Int,
-        dend: Int
+        dend: Int,
     ): CharSequence? {
         if (CommonConfig.DEBUG) {
             // 打印输入前后坐标变换

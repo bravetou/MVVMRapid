@@ -28,27 +28,26 @@ import com.brave.viewbindingdelegate.activityViewBinding
  *
  * ***desc***       ：Activity常用类
  */
-@Suppress("PrivatePropertyName")
 abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel> : AppCompatActivity(),
     ICommonView {
-    private val TAG by lazy { this::class.java.simpleName }
+    private val _tag by lazy { this::class.java.simpleName }
 
-    private val allGenerics by lazy { GenericsHelper(javaClass).classes }
+    private val _helper by lazy { GenericsHelper(javaClass) }
 
     protected open val binding: Binding by activityViewBinding(onViewDestroyed = {
         if (it is ViewDataBinding) it.unbind()
     }, viewBinder = { _ ->
-        initViewBinding() ?: allGenerics.filterIsInstance<Class<Binding>>()
-            .find { ViewBinding::class.java.isAssignableFrom(it) }
-            ?.inflate(layoutInflater) ?: error("Generic <Binding> not found")
+        initViewBinding() ?: _helper.find<ViewBinding, Binding>() //
+            ?.inflate(layoutInflater) //
+        ?: error("Generic <Binding> not found")
     }, viewNeedsInitialization = false)
 
     protected open fun initViewBinding(): Binding? = null
 
     protected open val viewModel: VM by lazy {
-        initViewModel() ?: allGenerics.filterIsInstance<Class<VM>>()
-            .find { CommonViewModel::class.java.isAssignableFrom(it) }
-            ?.let { ViewModelProvider(this)[viewModelKey, it] } ?: error("Generic <VM> not found")
+        initViewModel() ?: _helper.find<CommonViewModel, VM>() //
+            ?.let { ViewModelProvider(this)[viewModelKey, it] } //
+        ?: error("Generic <VM> not found")
     }
 
     protected open fun initViewModel(): VM? = null
@@ -102,7 +101,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel> : App
     /**
      * ViewModel密匙
      */
-    protected open val viewModelKey: String = "taskId_${TAG}_$taskId"
+    protected open val viewModelKey: String = "taskId_${_tag}_$taskId"
 
     /**
      * 刷新布局
@@ -168,8 +167,8 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel> : App
 
     override fun onDestroy() {
         // 销毁时取消所有回调函数的持有
-        callbacks.clear()
-        launcher.unregister()
+        _callbacks.clear()
+        _launcher.unregister()
         // 解绑ViewDataBinding
         binding.also { binding -> if (binding is ViewDataBinding) binding.unbind() }
         super.onDestroy()
@@ -187,8 +186,8 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel> : App
         callback: (Bundle) -> Unit = {},
     ) {
         val code = requestCode ?: cls.hashCode()
-        callbacks[code] = callback
-        launcher.launch(Intent(this, cls).also { intent ->
+        _callbacks[code] = callback
+        _launcher.launch(Intent(this, cls).also { intent ->
             bundle.putInt(_requestKey, code)
             intent.putExtras(bundle)
         })
@@ -211,17 +210,17 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel> : App
      */
     private val _requestCode by lazy { intent?.extras?.getInt(_requestKey, -1) ?: -1 }
     private val _requestKey by lazy { CommonConfig.REQUEST_CODE }
-    private val callbacks = linkedMapOf<Int, (Bundle) -> Unit>()
+    private val _callbacks = linkedMapOf<Int, (Bundle) -> Unit>()
 
     /**
      * 带返回结果的启动程序的通用协议
      */
-    private val contract = ActivityResultContracts.StartActivityForResult()
+    private val _contract = ActivityResultContracts.StartActivityForResult()
 
     /**
      * 可用于启动活动或处理已准备调用的启动程序
      */
-    private val launcher = registerForActivityResult(contract, ::onActivityResult)
+    private val _launcher = registerForActivityResult(_contract, ::onActivityResult)
 
     /**
      * 启动程序返回之后的结果回调
@@ -229,7 +228,7 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel> : App
     open fun onActivityResult(result: ActivityResult?) {
         result ?: return
         val bundle = result.data?.extras ?: return
-        callbacks.filter { (requestCode, _) ->
+        _callbacks.filter { (requestCode, _) ->
             requestCode == bundle.getInt(_requestKey)
         }.forEach {
             it.value(bundle)

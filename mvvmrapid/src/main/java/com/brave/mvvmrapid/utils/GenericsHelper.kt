@@ -38,4 +38,13 @@ class GenericsHelper(cls: Class<*>? = null) {
             findGenerics(it)
         }
     }
+
+    /**
+     * @param T 来源泛型
+     * @param R 返回泛型
+     */
+    inline fun <reified T, R> find(): Class<R>? {
+        return classes.filterIsInstance<Class<R>>() // 此方法过滤继承实例有BUG，需再次进行来源判断
+            .find { T::class.java.isAssignableFrom(it) }
+    }
 }

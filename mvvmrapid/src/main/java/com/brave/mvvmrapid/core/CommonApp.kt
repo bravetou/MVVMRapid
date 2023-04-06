@@ -16,7 +16,6 @@ import kotlin.system.exitProcess
  *
  * ***desc***       ：开放的常用App
  */
-@Suppress("unused")
 open class CommonApp : Application() {
     companion object {
         @JvmStatic

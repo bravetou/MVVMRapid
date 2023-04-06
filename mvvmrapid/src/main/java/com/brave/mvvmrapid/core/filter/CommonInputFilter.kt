@@ -18,11 +18,10 @@ import java.util.regex.Pattern
  * @param hint 可选参数是否弹出提示语句
  * @param keep 是否需要保留除开正则过滤以外的部分
  */
-@Suppress("unused")
 class CommonInputFilter private constructor(
     private val regex: String,
     private val hint: String? = null,
-    private val keep: Boolean = false
+    private val keep: Boolean = false,
 ) : InputFilter {
     /**
      * 常用正则过滤器
@@ -40,7 +39,7 @@ class CommonInputFilter private constructor(
         end: Int,
         dest: Spanned?,
         dstart: Int,
-        dend: Int
+        dend: Int,
     ): CharSequence? {
         val compile = Pattern.compile(regex)
         val matcher = compile.matcher(source.toString())
@@ -73,7 +72,7 @@ class CommonInputFilter private constructor(
         fun newInstance(
             regex: String,
             hint: String? = null,
-            keep: Boolean = false
+            keep: Boolean = false,
         ): CommonInputFilter {
             return CommonInputFilter(regex, hint, keep)
         }

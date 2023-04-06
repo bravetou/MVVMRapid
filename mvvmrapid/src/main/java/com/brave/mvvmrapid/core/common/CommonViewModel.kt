@@ -20,54 +20,52 @@ import java.util.concurrent.CancellationException
  *
  * ***desc***       ：ViewModel常用类
  */
-@Suppress("RedundantOverride", "unused")
 open class CommonViewModel(
     application: Application
 ) : AndroidViewModel(application), ICommonViewModel {
     protected open val app: Application by lazy { getApplication() }
 
-    @Suppress("PrivatePropertyName")
-    private val TAG by lazy { this::class.java.simpleName }
+    private val _tag by lazy { this::class.java.simpleName }
 
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
         if (CommonConfig.DEBUG) {
-            LogUtils.dTag(TAG, "onCreate: <$this>")
+            LogUtils.dTag(_tag, "onCreate: <$this>")
         }
     }
 
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
         if (CommonConfig.DEBUG) {
-            LogUtils.dTag(TAG, "onStart: <$this>")
+            LogUtils.dTag(_tag, "onStart: <$this>")
         }
     }
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
         if (CommonConfig.DEBUG) {
-            LogUtils.dTag(TAG, "onResume: <$this>")
+            LogUtils.dTag(_tag, "onResume: <$this>")
         }
     }
 
     override fun onPause(owner: LifecycleOwner) {
         super.onPause(owner)
         if (CommonConfig.DEBUG) {
-            LogUtils.dTag(TAG, "onPause: <$this>")
+            LogUtils.dTag(_tag, "onPause: <$this>")
         }
     }
 
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
         if (CommonConfig.DEBUG) {
-            LogUtils.dTag(TAG, "onStop: <$this>")
+            LogUtils.dTag(_tag, "onStop: <$this>")
         }
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
         if (CommonConfig.DEBUG) {
-            LogUtils.dTag(TAG, "onDestroy: <$this>")
+            LogUtils.dTag(_tag, "onDestroy: <$this>")
         }
     }
 
@@ -128,7 +126,7 @@ open class CommonViewModel(
         // 创建处理协程抛出的异常的函数（可以处理本作用域及以下所有作用域的异常）
         val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
             if (CommonConfig.DEBUG) {
-                val name = coroutineContext[CoroutineName]?.name ?: TAG
+                val name = coroutineContext[CoroutineName]?.name ?: _tag
                 Log.d("CoroutineException", "$name 处理异常 => $throwable")
             }
             // 拦截非任务取消异常的错误信息
@@ -179,7 +177,7 @@ open class CommonViewModel(
         // 创建处理协程抛出的异常的函数（可以处理本作用域及以下所有作用域的异常）
         val handler = CoroutineExceptionHandler { coroutineContext, throwable ->
             if (CommonConfig.DEBUG) {
-                val name = coroutineContext[CoroutineName]?.name ?: TAG
+                val name = coroutineContext[CoroutineName]?.name ?: _tag
                 Log.d("CoroutineException", "$name 处理异常 => $throwable")
             }
             // 拦截含任务取消异常在内的所有错误信息
