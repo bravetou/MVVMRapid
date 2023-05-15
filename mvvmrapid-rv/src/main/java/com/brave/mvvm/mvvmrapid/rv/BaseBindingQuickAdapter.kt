@@ -21,13 +21,12 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
  */
 @Suppress("UNCHECKED_CAST", "unused")
 abstract class BaseBindingQuickAdapter<T, Binding : ViewBinding> @JvmOverloads constructor(
-    @LayoutRes private val layoutResId: Int = -1,
-    data: MutableList<T>? = null
+    @LayoutRes
+    private val layoutResId: Int = -1,
+    data: MutableList<T>? = null,
 ) : BaseQuickAdapter<T, BaseViewHolder>(layoutResId, data) {
     override fun onCreateDefViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
-        GenericsHelper(javaClass).classes
-            .filterIsInstance<Class<Binding>>()
-            .find { ViewBinding::class.java.isAssignableFrom(it) }
+        GenericsHelper(javaClass).find<ViewBinding, Binding>()
             ?.inflate<Binding>(LayoutInflater.from(parent.context), parent, false)
             ?.also { return BaseBindingViewHolder(it) }
         return super.onCreateDefViewHolder(parent, viewType)

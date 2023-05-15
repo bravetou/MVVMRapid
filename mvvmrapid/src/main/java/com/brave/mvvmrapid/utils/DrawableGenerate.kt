@@ -5,8 +5,11 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.ImageView
-import androidx.annotation.*
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
+import androidx.annotation.Px
 import java.lang.ref.WeakReference
 
 /**
@@ -438,12 +441,19 @@ class DrawableGenerate private constructor() {
             }
             count >= 2 -> {
                 this.mStartColor = colors[0]
+                this.mCenterColor = null
                 this.mEndColor = colors[1]
             }
             count >= 1 -> {
                 this.mBackgroundColor = colors[0]
+                this.mStartColor = null
+                this.mCenterColor = null
+                this.mEndColor = null
             }
             else -> {
+                this.mStartColor = null
+                this.mCenterColor = null
+                this.mEndColor = null
             }
         }
         return this
