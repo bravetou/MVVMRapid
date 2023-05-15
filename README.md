@@ -42,6 +42,12 @@ dependencies {
     implementation 'com.github.bravetou.MVVMRapid:binding-delegate-reflect:$version'
 }
 ```
+```groovy
+dependencies {
+    // mvvm core => eg（v1.1.3 => 1.1.3）
+    implementation 'com.github.bravetou.MVVMRapid:mvvmrapid:1.1.3'
+}
+```
 
 ---
 3. 配置Application 
