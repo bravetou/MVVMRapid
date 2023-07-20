@@ -81,9 +81,9 @@ abstract class CommonActivity<Binding : ViewBinding, VM : CommonViewModel> : App
                 binding.setVariable(variableId, viewModel)
                 // 支持LiveData绑定xml，数据改变，UI自动会更新
                 binding.lifecycleOwner = this
-                // 让ViewModel拥有View的生命周期感应
-                lifecycle.addObserver(viewModel)
             }
+            // 让ViewModel拥有View的生命周期感应
+            lifecycle.addObserver(viewModel)
         }
     }
 

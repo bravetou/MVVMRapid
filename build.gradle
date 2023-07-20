@@ -19,11 +19,11 @@ ext {
 
     dependencies = [:]
 
-    dependencies.coreKtx = 'androidx.core:core-ktx:1.9.0'
+    dependencies.coreKtx = 'androidx.core:core-ktx:1.10.1'
     dependencies.appcompat = 'androidx.appcompat:appcompat:1.6.1'
-    dependencies.material = 'com.google.android.material:material:1.8.0'
-    dependencies.activityKtx = 'androidx.activity:activity-ktx:1.7.0'
-    dependencies.fragmentKtx = 'androidx.fragment:fragment-ktx:1.5.6'
+    dependencies.material = 'com.google.android.material:material:1.9.0'
+    dependencies.activityKtx = 'androidx.activity:activity-ktx:1.7.2'
+    dependencies.fragmentKtx = 'androidx.fragment:fragment-ktx:1.6.0'
     dependencies.multidex = 'androidx.multidex:multidex:2.0.1'
     dependencies.utilcodex = 'com.blankj:utilcodex:1.31.1'
     dependencies.constraintlayout = 'androidx.constraintlayout:constraintlayout:2.1.4'
